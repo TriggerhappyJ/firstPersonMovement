@@ -1,31 +1,45 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public CharacterController controller;
-    public float movementSpeed = 12f;
-    float moveSpeed;
-    public float gravity = -9.81f;
-    public float jumpHeight = 3f;
+    [Header("Player Settings")]
+    private readonly float _movementSpeed = 12f;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float sprintSpeed;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float jumpHeight = 3f;
 
-    public Transform groundCheck;
-    public float groundDistance = 0.4f;
-    public LayerMask groundMask;
+    [Header("Ground Settings")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private LayerMask groundMask;
 
-    [SerializeField] private float playerVelocity;
+    [Header("Player Data")]
+    [SerializeField] private float playerVerticalVelocity;
 
-    Vector3 velocity;
-    bool isGrounded;
-    bool doublejumped;
+    private Vector3 velocity;
+    private bool isGrounded;
+    private bool doublejumped;
 
-    // Player's current velocity that can be accessed by other scripts
-    public static float playerVelocityHorizontal;
-    public static float playerVelocityVertical;
+    private CharacterController cController;
+    private Rigidbody rBody;
+
+    private bool resettingSpeed = false;
+    private IEnumerator resetSpeed;
+
+    private void Start()
+    {
+        cController = GetComponent<CharacterController>();
+        rBody = GetComponent<Rigidbody>();
+        moveSpeed = _movementSpeed;
+        resetSpeed = ResetSpeed();
+    }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Checks if player is on the ground
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -34,9 +48,6 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
             doublejumped = false;
         }
-        // Calculate player speed 
-        playerVelocityHorizontal = controller.velocity.x;
-        playerVelocityVertical = controller.velocity.z;
 
         // Gets player input
         float x = Input.GetAxis("Horizontal");
@@ -44,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Moves player based on movement
         Vector3 move = transform.right * x + transform.forward * z;
-        controller.Move(move * moveSpeed * Time.deltaTime);
+        cController.Move(move * (moveSpeed * Time.deltaTime));
 
         // Player jump
         if (Input.GetButtonDown("Jump") && isGrounded)
@@ -60,18 +71,55 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Player sprint
-        if (Input.GetButton("Fire3") && Input.GetKey("w"))
+        if (Input.GetButtonDown("Fire3") && Input.GetKey("w") && isGrounded)
         {
-            moveSpeed = movementSpeed * 2f;
-        } else {
-            moveSpeed = movementSpeed;
+            // Resets the coroutine and stops it 
+            StopCoroutine(resetSpeed);
+            resetSpeed = ResetSpeed();
+            resettingSpeed = false;
+            
+            // Adds sprint modifier to movement speed
+            moveSpeed = _movementSpeed + sprintSpeed;
+        }
+        else if (Input.GetButtonUp("Fire3"))
+        {
+            if (!resettingSpeed)
+            {
+                // Sets movement speed back to normal over time
+                StartCoroutine(resetSpeed);
+            }
         }
 
-        // Applies gravity to player
+        // Applies gravity to player    
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        cController.Move(velocity * Time.deltaTime);
+        
+        // Calculate player's velocity 
+        playerVerticalVelocity = cController.velocity.y;
+        
+        Debug.Log(resettingSpeed);
+    }   
+    
+    IEnumerator ResetSpeed()
+    {
+        resettingSpeed = true;
+        Debug.Log("Resetting speed");
+        while (moveSpeed > _movementSpeed+0.1f)
+        {
+            if (resettingSpeed)
+            {
+                moveSpeed = Mathf.Lerp(moveSpeed, _movementSpeed, 0.01f);
+                yield return null;
+            }
+            else
+            {
+                break;
+            }
+        }
 
-        playerVelocity = velocity.z;
-
+        // Hard sets the move speed back to normal after loop
+        moveSpeed = _movementSpeed;
+        Debug.Log("Done resetting");
+        resettingSpeed = false;
     }
 }

@@ -6,14 +6,14 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     // Track PlayerController speed
-    [SerializeField] private float playerVelocityHorizontal;
-    [SerializeField] private float playerVelocityVertical;
+    //[SerializeField] private float playerVelocityHorizontal;
+    //[SerializeField] private float playerVelocityVertical;
     
     private void Update()
     {
         // Retrieve Player Controller speed
-        playerVelocityHorizontal = PlayerMovement.playerVelocityHorizontal;
-        playerVelocityVertical = PlayerMovement.playerVelocityVertical;
+        //playerVelocityHorizontal = PlayerMovement.playerVelocityHorizontal;
+        //playerVelocityVertical = PlayerMovement.playerVelocityVertical;
 
 
     }
