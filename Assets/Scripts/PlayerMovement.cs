@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private readonly float _movementSpeed = 12f;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintSpeed;
+    [SerializeField] private float sprintDecaySpeed;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float jumpHeight = 3f;
 
@@ -108,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (resettingSpeed)
             {
-                moveSpeed = Mathf.Lerp(moveSpeed, _movementSpeed, 0.01f);
+                moveSpeed = Mathf.Lerp(moveSpeed, _movementSpeed, sprintDecaySpeed);
                 yield return null;
             }
             else
