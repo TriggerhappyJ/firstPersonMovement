@@ -97,8 +97,6 @@ public class PlayerMovement : MonoBehaviour
         
         // Calculate player's velocity 
         playerVerticalVelocity = cController.velocity.y;
-        
-        Debug.Log(resettingSpeed);
     }   
     
     IEnumerator ResetSpeed()
