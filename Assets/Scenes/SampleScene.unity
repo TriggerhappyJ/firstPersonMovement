@@ -1731,11 +1731,13 @@ MonoBehaviour:
   jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.4
+  canDoubleJump: 0
   jumpKey: 32
   playerHeight: 2
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+  isGrounded: 0
   orientation: {fileID: 405897551}
 --- !u!1 &1133128086
 GameObject:
