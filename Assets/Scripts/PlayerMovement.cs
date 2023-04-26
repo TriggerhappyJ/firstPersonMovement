@@ -6,10 +6,17 @@ using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")] 
+    [Header("Movement")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float groundDrag;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpCooldown;
+    [SerializeField] private float airMultiplier;
+    private bool canJump = true;
 
+    [Header("Keybinds")] 
+    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+        
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask groundMask;
@@ -37,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundMask);
         
         Inputs();
+        SpeedController();
         
         // Apply drag
         if (isGrounded)
@@ -58,13 +66,53 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        
+        // Jump logic
+        if (Input.GetKey(jumpKey) && canJump && isGrounded)
+        {
+            canJump = false;
+            Jump();
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
 
     private void MovePlayer()
     {
         // Calculate players move direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        if (isGrounded)
+        {
+            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f), ForceMode.Force);
+        } 
+        else if (!isGrounded)
+        {
+            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f * airMultiplier), ForceMode.Force);
+        }
+    }
+
+    private void Jump()
+    {
+        // Reset y velocity
+        rBody.velocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
         
-        rBody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        canJump = true;
+    }
+
+    private void SpeedController()
+    {
+        Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
+        
+        // Clamp velocity when needed
+        if (flatVelocity.magnitude > moveSpeed)
+        {
+            Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
+            rBody.velocity = new Vector3(limitedVelocity.x, rBody.velocity.y, limitedVelocity.z);
+        }
     }
 }
