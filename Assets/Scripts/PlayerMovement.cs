@@ -6,8 +6,14 @@ using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
+    [Header("Movement")] 
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float groundDrag;
+
+    [Header("Ground Check")] 
+    [SerializeField] private float playerHeight;
+    [SerializeField] private LayerMask groundMask;
+    private bool isGrounded;
     
     [SerializeField] private Transform orientation;
 
@@ -27,7 +33,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        // Check for ground under player
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundMask);
+        
         Inputs();
+        
+        // Apply drag
+        if (isGrounded)
+        {
+            rBody.drag = groundDrag;
+        }
+        else
+        {
+            rBody.drag = 0;
+        }
     }
 
     private void FixedUpdate()
