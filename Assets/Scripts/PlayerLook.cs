@@ -5,28 +5,32 @@ using UnityEngine;
 public class PlayerLook : MonoBehaviour
 {
 
-    public float mouseSens = 100f;
+    public float mouseSensX;
+    public float mouseSensY;
 
-    public Transform playerBody;
+    public Transform orientation;
 
-    float xRotation = 0f;
+    private float xRotation;
+    private float yRotation;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSens * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSens * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensX * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensY * Time.deltaTime;
 
+        yRotation += mouseX;
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 85f);
+        xRotation = Mathf.Clamp(xRotation, -89f, 89f);
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        playerBody.Rotate(Vector3.up * mouseX);
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 }
