@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMultiplier;
     private bool canJump = true;
+    [SerializeField] private bool canDoubleJump;
 
     [Header("Keybinds")] 
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -20,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask groundMask;
-    private bool isGrounded;
+    [SerializeField] private bool isGrounded;
     
     [SerializeField] private Transform orientation;
 
@@ -46,9 +47,10 @@ public class PlayerMovement : MonoBehaviour
         Inputs();
         SpeedController();
         
-        // Apply drag
+        // Apply drag, set double jump availability
         if (isGrounded)
         {
+            canDoubleJump = true;
             rBody.drag = groundDrag;
         }
         else
@@ -73,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
+        } 
+        else if (Input.GetKeyDown(jumpKey) && !isGrounded && canDoubleJump)
+        {
+            canDoubleJump = false;
+            Jump();
         }
     }
 
