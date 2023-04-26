@@ -1726,13 +1726,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede661726b2bbe149a1aa2f355f5b40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
+  walkSpeed: 10
+  runSpeed: 15
   groundDrag: 5
   jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.4
-  canDoubleJump: 0
+  crouchSpeed: 5
+  crouchYScale: 0.5
   jumpKey: 32
+  runKey: 304
+  crouchKey: 306
   playerHeight: 2
   groundMask:
     serializedVersion: 2
