@@ -36,7 +36,7 @@ public class PlayerSliding : MonoBehaviour
     {
         verticalInput = Input.GetAxisRaw("Vertical");
         
-        if (Input.GetKeyDown(slideKey) && (verticalInput >= 1) && (pMovement.state == PlayerMovement.MovementState.running || pMovement.OnSlope()))
+        if (Input.GetKeyDown(slideKey) && (verticalInput >= 1) && (pMovement.state == PlayerMovement.MovementState.running && !pMovement.OnSlope() || pMovement.OnSlope() && rBody.velocity.y <= -0.2f))
         {
             StartSlide();
         }
@@ -59,7 +59,7 @@ public class PlayerSliding : MonoBehaviour
     {
         pMovement.isSliding = true;
         
-        playerObject.localScale = new Vector3(playerObject.localScale.x, slideYScale, playerObject.localScale.z);
+        transform.localScale = new Vector3(playerObject.localScale.x, slideYScale, playerObject.localScale.z);
         rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         
         slideTimer = maxSlideTime;
@@ -92,6 +92,6 @@ public class PlayerSliding : MonoBehaviour
     {
         pMovement.isSliding = false;
         
-        playerObject.localScale = new Vector3(playerObject.localScale.x, startYScale, playerObject.localScale.z);
+        transform.localScale = new Vector3(playerObject.localScale.x, startYScale, playerObject.localScale.z);
     }
 }

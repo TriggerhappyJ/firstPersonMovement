@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -51,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
     private bool exitingSlope;
     
     [SerializeField] private Transform orientation;
+    [SerializeField] private TextMeshProUGUI velocityText;
+    [SerializeField] private TextMeshProUGUI stateText;
+
 
     private float horizontalInput;
     private float verticalInput;
@@ -59,8 +63,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rBody;
 
-    public MovementState state;
-    public float playerVelocity;
+    [HideInInspector] public MovementState state;
+    private float playerVelocity;
     
     public enum MovementState
     {
@@ -113,6 +117,10 @@ public class PlayerMovement : MonoBehaviour
         
         // Update player forwards velocity variable with rigidbody velocity
         playerVelocity = rBody.velocity.magnitude;
+        
+        // Update HUD text
+        velocityText.text = "Velocity: " + moveSpeed + " m/s";
+        stateText.text = "State: " + state;
     }
 
     private void Inputs()
@@ -153,7 +161,7 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.sliding;
 
-            if (OnSlope() && rBody.velocity.y > 0.1f)
+            if (OnSlope() && rBody.velocity.y < -0.2f)
             {
                 desiredMoveSpeed = slideSpeed;
             }
@@ -162,7 +170,6 @@ public class PlayerMovement : MonoBehaviour
                 desiredMoveSpeed = runSpeed;
             }
         }
-        
         // Set crouch state
         else if (Input.GetKey(crouchKey))
         {
@@ -190,10 +197,15 @@ public class PlayerMovement : MonoBehaviour
             state = MovementState.midair;
         }
 
-        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 10f && moveSpeed != 0)
         {
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
+        }
+        else if(horizontalInput == 0 && verticalInput == 0)
+        {
+            StopAllCoroutines();
+            moveSpeed = desiredMoveSpeed;
         }
         else
         {
@@ -239,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
         // On slope
         if (OnSlope() && !exitingSlope)
         {
-            rBody.AddForce(GetSlopeDirection(moveDirection) * (desiredMoveSpeed * 20f), ForceMode.Force);
+            rBody.AddForce(GetSlopeDirection(moveDirection) * (moveSpeed * 20f), ForceMode.Force);
 
             if (rBody.velocity.y > 0)
             {
@@ -250,12 +262,12 @@ public class PlayerMovement : MonoBehaviour
         // On ground
         else if (isGrounded)
         {
-            rBody.AddForce(moveDirection.normalized * (desiredMoveSpeed * 10f), ForceMode.Force);
+            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f), ForceMode.Force);
         } 
         // midair
         else if (!isGrounded)
         {
-            rBody.AddForce(moveDirection.normalized * (desiredMoveSpeed * 10f * airMultiplier), ForceMode.Force);
+            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f * airMultiplier), ForceMode.Force);
         }
         
         // Turns gravity off while on slope
@@ -305,7 +317,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.5f))
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.2f + 1f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
