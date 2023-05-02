@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rBody;
 
     [HideInInspector] public MovementState state;
-    private float playerVelocity;
+    public float playerVelocity;
     
     public enum MovementState
     {
@@ -121,6 +121,8 @@ public class PlayerMovement : MonoBehaviour
         // Update HUD text
         velocityText.text = "Velocity: " + moveSpeed + " m/s";
         stateText.text = "State: " + state;
+        
+        playerVelocity = rBody.velocity.magnitude;
     }
 
     private void Inputs()
@@ -199,6 +201,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 10f && moveSpeed != 0)
         {
+            Debug.Log("It's starting the coroutine");
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
@@ -209,6 +212,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            Debug.Log("It's doing this shit");
             moveSpeed = desiredMoveSpeed;
         }
 
@@ -240,7 +244,7 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
         
-        moveSpeed = desiredMoveSpeed;
+        //moveSpeed = desiredMoveSpeed;
     }
 
     private void MovePlayer()
