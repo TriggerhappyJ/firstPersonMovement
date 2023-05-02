@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
-        else if(horizontalInput == 0 && verticalInput == 0)
+        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.walking || state == MovementState.running) && moveSpeed <= 15))
         {
             StopAllCoroutines();
             moveSpeed = desiredMoveSpeed;
