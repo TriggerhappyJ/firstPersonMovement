@@ -14,7 +14,9 @@ public class PlayerSliding : MonoBehaviour
     [Header("Slide Settings")]
     [SerializeField] private float maxSlideTime;
     [SerializeField] private float slideForce;
+    [SerializeField] private float slideCooldown;
     private float slideTimer;
+    private bool canSlide = true;
     
     [SerializeField] private float slideYScale;
     private float startYScale;
@@ -36,9 +38,11 @@ public class PlayerSliding : MonoBehaviour
     {
         verticalInput = Input.GetAxisRaw("Vertical");
         
-        if (Input.GetKeyDown(slideKey) && (verticalInput >= 1) && (pMovement.state == PlayerMovement.MovementState.running && !pMovement.OnSlope() || pMovement.OnSlope() && rBody.velocity.y <= -0.2f))
+        if (Input.GetKey(slideKey) && verticalInput >= 1 && (!pMovement.OnSlope() && rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && rBody.velocity.y <= -0.2f) && canSlide)
         {
+            canSlide = false;
             StartSlide();
+            Invoke(nameof(ResetSlide), slideCooldown);
         }
         
         if (Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.state == PlayerMovement.MovementState.midair)
@@ -65,6 +69,11 @@ public class PlayerSliding : MonoBehaviour
         slideTimer = maxSlideTime;
     }
 
+    private void ResetSlide()
+    {
+        canSlide = true;
+    }
+    
     private void SlidingMovement()
     {
         Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -82,7 +91,7 @@ public class PlayerSliding : MonoBehaviour
             rBody.AddForce(pMovement.GetSlopeDirection(inputDirection) * slideForce, ForceMode.Force);
         }
         
-        if (slideTimer <= 0)
+        if (slideTimer <= 0 || rBody.velocity.magnitude <= 0.1f)
         {
             StopSlide();
         }

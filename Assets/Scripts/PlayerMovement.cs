@@ -144,7 +144,7 @@ public class PlayerMovement : MonoBehaviour
 
             isCrouching = true;
         }
-        if (Input.GetKeyUp(crouchKey))
+        else if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
 
