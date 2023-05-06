@@ -8,6 +8,7 @@ public class PlayerSliding : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform playerObject;
+    
     private Rigidbody rBody;
     private PlayerMovement pMovement;
     
@@ -25,6 +26,11 @@ public class PlayerSliding : MonoBehaviour
     [SerializeField] private KeyCode slideKey = KeyCode.LeftControl;
     private float horizontalInput;
     private float verticalInput;
+    
+    [Header("Camera Effects")]
+    [SerializeField] private PlayerCam cam;
+    [SerializeField] private float camFov;
+    [SerializeField] private Vector3 camTilt;
     
     private void Start()
     {
@@ -67,6 +73,10 @@ public class PlayerSliding : MonoBehaviour
         rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         
         slideTimer = maxSlideTime;
+        
+        // Set camera effects
+        cam.DoFov(camFov);
+        cam.DoTilt(camTilt);
     }
 
     private void ResetSlide()
@@ -102,5 +112,9 @@ public class PlayerSliding : MonoBehaviour
         pMovement.isSliding = false;
         
         transform.localScale = new Vector3(playerObject.localScale.x, startYScale, playerObject.localScale.z);
+        
+        // Reset camera
+        cam.DoFov(80f);
+        cam.DoTilt(new Vector3(0,0,0));
     }
 }

@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     
         
     [Header("Keybinds")] 
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    public KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
         
@@ -60,6 +60,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI velocityText;
     [SerializeField] private TextMeshProUGUI stateText;
 
+    [Header("Camera Effects")]
+    [SerializeField] private PlayerCam cam;
+    [SerializeField] private Vector3 camTilt;
 
     private float horizontalInput;
     private float verticalInput;
@@ -69,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rBody;
 
     [HideInInspector] public MovementState state;
-    public float playerVelocity;
+    private float playerVelocity;
     
     public enum MovementState
     {
@@ -128,16 +131,16 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
         
         // Jump logic
-        if (Input.GetKey(jumpKey) && canJump && isGrounded)
+        if (Input.GetKey(jumpKey) && canJump && isGrounded && state != MovementState.wallrunning)
         {
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         } 
-        else if (Input.GetKeyDown(jumpKey) && !isGrounded && canDoubleJump && state != MovementState.crouching)
+        else if (Input.GetKeyDown(jumpKey) && !isGrounded && canDoubleJump && state != MovementState.crouching && state != MovementState.wallrunning)
         {
             canDoubleJump = false;
-            DoubleJump();
+            Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         }
         
@@ -286,7 +289,10 @@ public class PlayerMovement : MonoBehaviour
         }
         
         // Turns gravity off while on slope
-        rBody.useGravity = !OnSlope();
+        if (!isWallrunning)
+        {
+            rBody.useGravity = !OnSlope();
+        }
     }
 
     private void Jump()
@@ -297,10 +303,13 @@ public class PlayerMovement : MonoBehaviour
         rBody.velocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
         
         rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        
+        // Add camera effects
+        cam.DoTilt(camTilt);
     }
 
     // Made to fix problem with downwards velocity (turns out the jump wasn't the issue :/)
-    private void DoubleJump()
+    /*private void DoubleJump()
     {
         // If player is moving downwards, cancel out their downwards velocity and then jump
         if (rBody.velocity.y <= 0)
@@ -312,13 +321,14 @@ public class PlayerMovement : MonoBehaviour
         
         // If the player is already moving upwards, just jump
         rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
+    }*/
 
     private void ResetJump()
     {
         canJump = true;
 
         exitingSlope = false;
+        cam.DoTilt(new Vector3(0,0,0));
     }
 
     private void SpeedController()
