@@ -113,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
         playerVelocity = rBody.velocity.magnitude;
         
         // Update HUD text
-        velocityText.text = "Velocity: " + playerVelocity + " m/s";
+        velocityText.text = "Velocity: " + Math.Round(playerVelocity, 2) + " m/s";
         stateText.text = "State: " + state;
     }
 
@@ -132,7 +132,8 @@ public class PlayerMovement : MonoBehaviour
         else if (Input.GetKeyDown(jumpKey) && !isGrounded && canDoubleJump && state != MovementState.crouching)
         {
             canDoubleJump = false;
-            Jump();
+            DoubleJump();
+            Invoke(nameof(ResetJump), jumpCooldown);
         }
         
         // Start crouch
@@ -162,6 +163,10 @@ public class PlayerMovement : MonoBehaviour
             if (OnSlope() && rBody.velocity.y < -0.2f)
             {
                 desiredMoveSpeed = maxSlideSpeed;
+            }
+            else if (!isGrounded && !OnSlope())
+            {
+                state = MovementState.midair;
             }
             else
             {
@@ -198,7 +203,6 @@ public class PlayerMovement : MonoBehaviour
         // Check if the desired move speed has largely changed
         if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 8f && moveSpeed != 0)
         {
-            Debug.Log("It's starting the coroutine");
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
@@ -209,7 +213,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            Debug.Log("It's doing this shit");
             moveSpeed = desiredMoveSpeed;
         }
 
@@ -231,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
                 float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
                 float slopeAngleIncrease = 1 + (slopeAngle / 90f);
 
-                time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+                time += Time.deltaTime * slopeIncreaseMultiplier * slopeAngleIncrease;
             }
             else
             {
@@ -284,6 +287,21 @@ public class PlayerMovement : MonoBehaviour
         rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
+    // Made to fix problem with downwards velocity (turns out the jump wasn't the issue :/)
+    private void DoubleJump()
+    {
+        // If player is moving downwards, cancel out their downwards velocity and then jump
+        if (rBody.velocity.y <= 0)
+        {
+            Vector3 velocityReverse = new Vector3(0f, rBody.velocity.y * -1, 0f);
+            rBody.AddForce(transform.up * jumpForce + velocityReverse, ForceMode.Impulse);
+            return;
+        }
+        
+        // If the player is already moving upwards, just jump
+        rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
     private void ResetJump()
     {
         canJump = true;
@@ -305,7 +323,8 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
-        
+            //Debug.Log(flatVelocity.magnitude + " vs " + moveSpeed);
+
             // Clamp velocity when needed
             if (flatVelocity.magnitude > moveSpeed)
             {

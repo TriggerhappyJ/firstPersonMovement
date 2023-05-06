@@ -41,7 +41,7 @@ public class PlayerSliding : MonoBehaviour
             StartSlide();
         }
         
-        if (Input.GetKeyUp(slideKey) && pMovement.isSliding)
+        if (Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.state == PlayerMovement.MovementState.midair)
         {
             StopSlide();
         }
