@@ -12,11 +12,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxSlideSpeed;
+    [SerializeField] private float maxWallRunSpeed;
 
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
+    
     [HideInInspector] public bool isSliding;
-
+    [HideInInspector] public bool isWallrunning;
+    [HideInInspector] public bool isCrouching;
+    
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
     
@@ -35,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float crouchYScale;
     private float startYScale;
-    [HideInInspector] public bool isCrouching;
+    
         
     [Header("Keybinds")] 
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -71,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
     {
         walking,
         running,
+        wallrunning,
         crouching,
         sliding,
         midair
@@ -155,8 +160,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
+        // Set wall running state
+        if (isWallrunning)
+        {
+            state = MovementState.wallrunning;
+            desiredMoveSpeed = maxWallRunSpeed;
+        }
+        
         // Set sliding state
-        if (isSliding)
+        else if (isSliding)
         {
             state = MovementState.sliding;
 
