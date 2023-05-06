@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 12.299988, y: 0}
+  m_AnchoredPosition: {x: 12.300049, y: 0}
   m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &21406127
@@ -1639,7 +1639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 12.299988, y: 38.96}
+  m_AnchoredPosition: {x: 12.300049, y: 38.960022}
   m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &925615835
@@ -2139,7 +2139,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088543150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: -17.42, y: 57.73, z: 88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2177,18 +2177,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede661726b2bbe149a1aa2f355f5b40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
-  runSpeed: 15
-  slideSpeed: 30
+  walkSpeed: 7
+  runSpeed: 10
+  maxSlideSpeed: 0
   isSliding: 0
   speedIncreaseMultiplier: 1.5
-  slopeIncreaseMultiplier: 4
-  groundDrag: 5
+  slopeIncreaseMultiplier: 2.5
+  groundDrag: 4
   jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.4
   crouchSpeed: 5
   crouchYScale: 0.5
+  isCrouching: 0
   jumpKey: 32
   runKey: 304
   crouchKey: 99
@@ -2202,6 +2203,7 @@ MonoBehaviour:
   velocityText: {fileID: 21406127}
   stateText: {fileID: 925615835}
   state: 0
+  playerVelocity: 0
 --- !u!114 &1088543155
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
-    [SerializeField] private float slideSpeed;
+    [SerializeField] private float maxSlideSpeed;
 
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float crouchYScale;
     private float startYScale;
+    [HideInInspector] public bool isCrouching;
         
     [Header("Keybinds")] 
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -85,15 +86,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Check for ground under player
-        if (state == MovementState.crouching)
-        {
-            isGrounded = Physics.Raycast(transform.position, Vector3.down, crouchYScale * 0.5f + 0.3f, groundMask);
-        }
-        else
-        {
-            isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, groundMask);
-        }
+        // Check if player is on the ground
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, groundMask);
 
         Inputs();
         SpeedController();
@@ -119,10 +113,8 @@ public class PlayerMovement : MonoBehaviour
         playerVelocity = rBody.velocity.magnitude;
         
         // Update HUD text
-        velocityText.text = "Velocity: " + moveSpeed + " m/s";
+        velocityText.text = "Velocity: " + playerVelocity + " m/s";
         stateText.text = "State: " + state;
-        
-        playerVelocity = rBody.velocity.magnitude;
     }
 
     private void Inputs()
@@ -148,10 +140,14 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+
+            isCrouching = true;
         }
         if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+
+            isCrouching = false;
         }
         
     }
@@ -165,7 +161,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (OnSlope() && rBody.velocity.y < -0.2f)
             {
-                desiredMoveSpeed = slideSpeed;
+                desiredMoveSpeed = maxSlideSpeed;
             }
             else
             {
@@ -173,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         // Set crouch state
-        else if (Input.GetKey(crouchKey))
+        else if (isCrouching)
         {
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
@@ -198,8 +194,9 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.midair;
         }
-
-        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 10f && moveSpeed != 0)
+        
+        // Check if the desired move speed has largely changed
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 8f && moveSpeed != 0)
         {
             Debug.Log("It's starting the coroutine");
             StopAllCoroutines();
@@ -240,11 +237,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 time += Time.deltaTime * speedIncreaseMultiplier;
             }
-            
             yield return null;
         }
         
-        //moveSpeed = desiredMoveSpeed;
+        moveSpeed = desiredMoveSpeed;
     }
 
     private void MovePlayer()
@@ -259,7 +255,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (rBody.velocity.y > 0)
             {
-                rBody.AddForce(Vector3.down * 120f, ForceMode.Force);
+                rBody.AddForce(Vector3.down * 80f, ForceMode.Force);
             }
         }
         
@@ -300,9 +296,9 @@ public class PlayerMovement : MonoBehaviour
         // Limit speed on slope
         if (OnSlope() && !exitingSlope)
         {
-            if (rBody.velocity.magnitude > desiredMoveSpeed)
+            if (rBody.velocity.magnitude > moveSpeed)
             {
-                rBody.velocity = rBody.velocity.normalized * desiredMoveSpeed;
+                rBody.velocity = rBody.velocity.normalized * moveSpeed;
             }
         }
         // Limit speed in air or on ground
@@ -311,9 +307,9 @@ public class PlayerMovement : MonoBehaviour
             Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
         
             // Clamp velocity when needed
-            if (flatVelocity.magnitude > desiredMoveSpeed)
+            if (flatVelocity.magnitude > moveSpeed)
             {
-                Vector3 limitedVelocity = flatVelocity.normalized * desiredMoveSpeed;
+                Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
                 rBody.velocity = new Vector3(limitedVelocity.x, rBody.velocity.y, limitedVelocity.z);
             }
         }
@@ -321,7 +317,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.2f + 1f))
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
