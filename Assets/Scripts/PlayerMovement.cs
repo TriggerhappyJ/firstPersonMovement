@@ -107,6 +107,10 @@ public class PlayerMovement : MonoBehaviour
             canDoubleJump = true;
             rBody.drag = groundDrag;
         }
+        else if (isWallrunning)
+        {
+            canDoubleJump = true;
+        }
         else
         {
             rBody.drag = 0;
