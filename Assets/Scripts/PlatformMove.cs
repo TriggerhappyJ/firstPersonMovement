@@ -5,18 +5,17 @@ using UnityEngine;
 
 public class PlatformMove : MonoBehaviour
 {
-
     [Header("References")] 
-    private Transform platform;
+    [SerializeField] private Transform platform;
 
     [Header("Platform Settings")] 
     [SerializeField] private float moveSpeed;
-    [SerializeField] private Vector3 finalPosition;
+    public Vector3 finalPosition;
     private Vector3 startPosition;
 
     private void Start()
     {
-        platform = GetComponent<Transform>();
+        //platform = GetComponent<Transform>();
         startPosition = transform.position;
     }
     

@@ -348,13 +348,14 @@ public class PlayerMovement : MonoBehaviour
         // Limit speed in air or on ground
         else
         {
-            Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
-            //Debug.Log(flatVelocity.magnitude + " vs " + moveSpeed);
+            Vector3 flatVelocity = new Vector3(rBody.velocity.x, rBody.velocity.y, rBody.velocity.z);
+            // Debug.Log(flatVelocity.normalized + " vs " + moveSpeed);
 
             // Clamp velocity when needed
             if (flatVelocity.magnitude > moveSpeed)
             {
                 Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
+                Debug.Log(limitedVelocity);
                 rBody.velocity = new Vector3(limitedVelocity.x, rBody.velocity.y, limitedVelocity.z);
             }
         }
