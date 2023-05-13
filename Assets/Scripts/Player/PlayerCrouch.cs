@@ -9,6 +9,7 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float crouchYScale;
     
     private PlayerMovement pMovement;
+    private PlayerKeybinds pKeybinds;
 
     [Header("Slide Camera Effects")]
     [SerializeField] private float crouchCamFov;
@@ -17,12 +18,13 @@ public class PlayerCrouch : MonoBehaviour
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();
+        pKeybinds = GetComponent<PlayerKeybinds>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(pMovement.crouchKey))
+        if (Input.GetKeyDown(pKeybinds.crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
@@ -36,7 +38,7 @@ public class PlayerCrouch : MonoBehaviour
             }
             pMovement.cam.DoTilt(crouchCamTilt);
         }
-        else if (Input.GetKeyUp(pMovement.crouchKey))
+        else if (Input.GetKeyUp(pKeybinds.crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, pMovement.startYScale, transform.localScale.z);
 

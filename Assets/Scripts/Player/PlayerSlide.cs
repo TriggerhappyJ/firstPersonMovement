@@ -8,6 +8,7 @@ public class PlayerSlide : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform playerObject;
     private PlayerMovement pMovement;
+    private PlayerKeybinds pKeybinds;
     
     [Header("Slide Settings")]
     [SerializeField] private float maxSlideTime;
@@ -17,10 +18,7 @@ public class PlayerSlide : MonoBehaviour
     private bool canSlide = true;
     
     [SerializeField] private float slideYScale;
-    
-    [Header("Keybinds")]
-    [SerializeField] private KeyCode slideKey = KeyCode.LeftControl;
-    
+  
     [Header("Slide Camera Effects")]
     [SerializeField] private float slideCamFov;
     [SerializeField] private Vector3 slideCamTilt;
@@ -28,18 +26,19 @@ public class PlayerSlide : MonoBehaviour
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();
+        pKeybinds = GetComponent<PlayerKeybinds>();
     }
 
     private void Update()
     {
-        if (Input.GetKey(slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
+        if (Input.GetKey(pKeybinds.slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
         {
             canSlide = false;
             StartSlide();
             Invoke(nameof(ResetSlide), slideCooldown);
         }
         
-        if ((Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.rBody.velocity.magnitude <= 0.1f) && pMovement.isSliding)
+        if ((Input.GetKeyUp(pKeybinds.slideKey) && pMovement.isSliding || pMovement.rBody.velocity.magnitude <= 0.1f) && pMovement.isSliding)
         {
             StopSlide();
         }

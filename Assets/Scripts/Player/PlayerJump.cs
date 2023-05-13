@@ -11,18 +11,17 @@ public class PlayerJump : MonoBehaviour
     [HideInInspector] public bool canJump = true;
     [HideInInspector] public bool canDoubleJump = true;
     
-    [Header("Keybinds")] 
-    public KeyCode jumpKey = KeyCode.Space;
-
     [Header("Camera Effects")]
     [SerializeField] private float jumpCamFov;
     [SerializeField] private Vector3 jumpCamTilt;
     
     private PlayerMovement pMovement;
+    private PlayerKeybinds pKeybinds;
     
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();
+        pKeybinds = GetComponent<PlayerKeybinds>();
     }
 
     private void Update()
@@ -34,13 +33,13 @@ public class PlayerJump : MonoBehaviour
         }
         
         // Jump logic
-        if (Input.GetKey(jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.wallrunning)
+        if (Input.GetKey(pKeybinds.jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.wallrunning)
         {
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         } 
-        else if (Input.GetKeyDown(jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.crouching && pMovement.state != PlayerMovement.MovementState.wallrunning)
+        else if (Input.GetKeyDown(pKeybinds.jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.crouching && pMovement.state != PlayerMovement.MovementState.wallrunning)
         {
             canDoubleJump = false;
             Jump();

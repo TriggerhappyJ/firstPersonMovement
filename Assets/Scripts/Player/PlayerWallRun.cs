@@ -13,10 +13,7 @@ public class PlayerWallRun : MonoBehaviour
     [SerializeField] private float wallCimbSpeed;
     [SerializeField] private float maxWallRunTime;
     private float wallRunTimer;
-
-    [Header("Key Binds")] 
-    [SerializeField] private KeyCode upwardsKey = KeyCode.LeftShift;
-    [SerializeField] private KeyCode downwardsKey = KeyCode.LeftControl;
+    
     private bool upwardsRunning;
     private bool downwardsRunning;
 
@@ -41,12 +38,15 @@ public class PlayerWallRun : MonoBehaviour
     [SerializeField] private float wallCamFov;
     [SerializeField] private Vector3 wallCamTilt;
     
+    // References
     private PlayerMovement pMovement;
+    private PlayerKeybinds pKeybinds;
     private PlayerJump pJump;
 
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();
+        pKeybinds = GetComponent<PlayerKeybinds>();
         pJump = GetComponent<PlayerJump>();
     }
     
@@ -77,8 +77,8 @@ public class PlayerWallRun : MonoBehaviour
 
     private void StateMachine()
     {
-        upwardsRunning = Input.GetKey(upwardsKey);
-        downwardsRunning = Input.GetKey(downwardsKey);
+        upwardsRunning = Input.GetKey(pKeybinds.wallUpwardsKey);
+        downwardsRunning = Input.GetKey(pKeybinds.wallDownwardsKey);
 
         // Wall running state
         if ((wallLeft || wallRight) && pMovement.verticalInput > 0 && AboveGround() && !exitingWall)
@@ -100,7 +100,7 @@ public class PlayerWallRun : MonoBehaviour
                 exitWallTimer = exitWallTime;
             }
 
-            if (Input.GetKeyDown(pJump.jumpKey))
+            if (Input.GetKeyDown(pKeybinds.jumpKey))
             {
                 WallJump();
             }

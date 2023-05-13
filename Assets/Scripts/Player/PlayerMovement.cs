@@ -32,11 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDrag;
     
     [HideInInspector] public float startYScale;
-    
-    [Header("Keybinds")] 
-    public KeyCode runKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
-        
+
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
     public LayerMask groundMask;
@@ -65,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
 
     [HideInInspector] public MovementState state;
     private float playerVelocity;
+    private PlayerKeybinds pKeybinds;
     
     public enum MovementState
     {
@@ -80,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody>();
         rBody.freezeRotation = true;
+        
+        pKeybinds = GetComponent<PlayerKeybinds>();
         
         startYScale = transform.localScale.y;
     }
@@ -157,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         // Set run state
-        else if (isGrounded && Input.GetKey(runKey))
+        else if (isGrounded && Input.GetKey(pKeybinds.runKey))
         {
             state = MovementState.running;
             desiredMoveSpeed = runSpeed;
@@ -182,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
-        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.walking || state == MovementState.running) && moveSpeed <= 15))
+        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.walking || state == MovementState.running) && moveSpeed <= 10))
         {
             StopAllCoroutines();
             moveSpeed = desiredMoveSpeed;
@@ -255,9 +254,7 @@ public class PlayerMovement : MonoBehaviour
             rBody.useGravity = !OnSlope();
         }
     }
-
     
-
     private void SpeedController()
     {
         // Limit speed on slope

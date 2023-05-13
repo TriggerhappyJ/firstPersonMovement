@@ -2225,6 +2225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1088543152}
   - component: {fileID: 1088543153}
+  - component: {fileID: 1088543159}
   - component: {fileID: 1088543154}
   - component: {fileID: 1088543157}
   - component: {fileID: 1088543155}
@@ -2296,8 +2297,6 @@ MonoBehaviour:
   slopeIncreaseMultiplier: 5
   groundDrag: 4
   startYScale: 0
-  runKey: 304
-  crouchKey: 99
   playerHeight: 2
   groundMask:
     serializedVersion: 2
@@ -2329,7 +2328,6 @@ MonoBehaviour:
   slideForce: 30
   slideCooldown: 1.2
   slideYScale: 0.5
-  slideKey: 306
   slideCamFov: 90
   slideCamTilt: {x: 10, y: 0, z: 0}
 --- !u!114 &1088543156
@@ -2352,8 +2350,6 @@ MonoBehaviour:
   wallJumpAwayForce: 5
   wallCimbSpeed: 3
   maxWallRunTime: 1.25
-  upwardsKey: 304
-  downwardsKey: 306
   exitWallTime: 0.2
   useGravity: 1
   gravityCounterForce: 26
@@ -2377,7 +2373,6 @@ MonoBehaviour:
   jumpCooldown: 0.1
   canJump: 1
   canDoubleJump: 1
-  jumpKey: 32
   jumpCamFov: 0
   jumpCamTilt: {x: 5, y: 0, z: 0}
 --- !u!114 &1088543158
@@ -2395,6 +2390,24 @@ MonoBehaviour:
   crouchYScale: 0.5
   crouchCamFov: 75
   crouchCamTilt: {x: 0, y: 0, z: 0}
+--- !u!114 &1088543159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088543150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6968fdc49729a54aad293d5b021fb70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runKey: 304
+  crouchKey: 99
+  slideKey: 306
+  jumpKey: 32
+  wallUpwardsKey: 304
+  wallDownwardsKey: 306
 --- !u!1 &1133128086
 GameObject:
   m_ObjectHideFlags: 0
