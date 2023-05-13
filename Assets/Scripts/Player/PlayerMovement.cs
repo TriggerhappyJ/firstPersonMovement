@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     private float moveSpeed;
-    [SerializeField] private float walkSpeed;
+    static float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Crouch Settings")] 
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float crouchYScale;
-    private float startYScale;
+    internal float startYScale;
     
         
     [Header("Keybinds")] 
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
-    [SerializeField] private LayerMask groundMask;
+    [SerializeField] internal LayerMask groundMask;
     [SerializeField] private bool isGrounded;
     
     [Header("Slope Check")]
@@ -56,20 +56,23 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
     
-    [SerializeField] private Transform orientation;
+    [SerializeField] internal Transform orientation;
     [SerializeField] private TextMeshProUGUI velocityText;
     [SerializeField] private TextMeshProUGUI stateText;
 
     [Header("Camera Effects")]
-    [SerializeField] private PlayerCam cam;
+    [SerializeField] internal PlayerCam cam;
+    [SerializeField] private float camFov;
     [SerializeField] private Vector3 camTilt;
+    [SerializeField] private float defaultFov;
+    [SerializeField] private Vector3 defaultTilt;
 
-    private float horizontalInput;
-    private float verticalInput;
+    internal float horizontalInput;
+    internal float verticalInput;
     
     private Vector3 moveDirection;
 
-    private Rigidbody rBody;
+    internal Rigidbody rBody;
 
     [HideInInspector] public MovementState state;
     private float playerVelocity;
@@ -332,7 +335,7 @@ public class PlayerMovement : MonoBehaviour
         canJump = true;
 
         exitingSlope = false;
-        cam.DoTilt(new Vector3(0,0,0));
+        ResetCamera();
     }
 
     private void SpeedController()
@@ -375,5 +378,11 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 GetSlopeDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+
+    public void ResetCamera()
+    {
+        cam.DoFov(defaultFov);
+        cam.DoTilt(defaultTilt);
     }
 }

@@ -6,10 +6,7 @@ using UnityEngine;
 public class PlayerSliding : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform orientation;
     [SerializeField] private Transform playerObject;
-    
-    private Rigidbody rBody;
     private PlayerMovement pMovement;
     
     [Header("Slide Settings")]
@@ -20,38 +17,29 @@ public class PlayerSliding : MonoBehaviour
     private bool canSlide = true;
     
     [SerializeField] private float slideYScale;
-    private float startYScale;
     
     [Header("Keybinds")]
     [SerializeField] private KeyCode slideKey = KeyCode.LeftControl;
-    private float horizontalInput;
-    private float verticalInput;
     
-    [Header("Camera Effects")]
-    [SerializeField] private PlayerCam cam;
-    [SerializeField] private float camFov;
-    [SerializeField] private Vector3 camTilt;
+    [Header("Slide Camera Effects")]
+    [SerializeField] private float slideCamFov;
+    [SerializeField] private Vector3 slideCamTilt;
     
     private void Start()
     {
-        rBody = GetComponent<Rigidbody>();
         pMovement = GetComponent<PlayerMovement>();
-        
-        startYScale = playerObject.localScale.y;
     }
 
     private void Update()
     {
-        verticalInput = Input.GetAxisRaw("Vertical");
-        
-        if (Input.GetKey(slideKey) && verticalInput >= 1 && (!pMovement.OnSlope() && rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && rBody.velocity.y <= -0.2f) && canSlide)
+        if (Input.GetKey(slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide)
         {
             canSlide = false;
             StartSlide();
             Invoke(nameof(ResetSlide), slideCooldown);
         }
         
-        if (Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.state == PlayerMovement.MovementState.midair)
+        if (Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.state == PlayerMovement.MovementState.sliding)
         {
             StopSlide();
         }
@@ -70,13 +58,13 @@ public class PlayerSliding : MonoBehaviour
         pMovement.isSliding = true;
         
         transform.localScale = new Vector3(playerObject.localScale.x, slideYScale, playerObject.localScale.z);
-        rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         
         slideTimer = maxSlideTime;
         
         // Set camera effects
-        cam.DoFov(camFov);
-        cam.DoTilt(camTilt);
+        pMovement.cam.DoFov(slideCamFov);
+        pMovement.cam.DoTilt(slideCamTilt);
     }
 
     private void ResetSlide()
@@ -86,22 +74,22 @@ public class PlayerSliding : MonoBehaviour
     
     private void SlidingMovement()
     {
-        Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        Vector3 inputDirection = pMovement.orientation.forward * pMovement.verticalInput + pMovement.orientation.right * pMovement.horizontalInput;
 
         // Sliding on flat surface
-        if (!pMovement.OnSlope() || rBody.velocity.y > -0.1f)
+        if (!pMovement.OnSlope() || pMovement.rBody.velocity.y > -0.1f)
         {
-            rBody.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
+            pMovement.rBody.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
         
             slideTimer -= Time.deltaTime;
         } 
         // Sliding down slope
         else
         {
-            rBody.AddForce(pMovement.GetSlopeDirection(inputDirection) * slideForce, ForceMode.Force);
+            pMovement.rBody.AddForce(pMovement.GetSlopeDirection(inputDirection) * slideForce, ForceMode.Force);
         }
         
-        if (slideTimer <= 0 || rBody.velocity.magnitude <= 0.1f)
+        if (slideTimer <= 0 || pMovement.rBody.velocity.magnitude <= 0.1f)
         {
             StopSlide();
         }
@@ -111,10 +99,10 @@ public class PlayerSliding : MonoBehaviour
     {
         pMovement.isSliding = false;
         
-        transform.localScale = new Vector3(playerObject.localScale.x, startYScale, playerObject.localScale.z);
+        transform.localScale = new Vector3(playerObject.localScale.x, pMovement.startYScale, playerObject.localScale.z);
         
         // Reset camera
-        cam.DoFov(80f);
-        cam.DoTilt(new Vector3(0,0,0));
+        pMovement.cam.DoFov(80f);
+        pMovement.cam.DoTilt(new Vector3(0,0,0));
     }
 }
