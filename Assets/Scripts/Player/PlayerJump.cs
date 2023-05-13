@@ -19,7 +19,7 @@ public class PlayerJump : MonoBehaviour
     [SerializeField] private Vector3 jumpCamTilt;
     
     private PlayerMovement pMovement;
-
+    
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();

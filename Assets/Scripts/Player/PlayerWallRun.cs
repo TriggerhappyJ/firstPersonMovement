@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerWallRunning : MonoBehaviour
+public class PlayerWallRun : MonoBehaviour
 {
     [Header("Wall Running")]
     [SerializeField] private LayerMask wallMask;

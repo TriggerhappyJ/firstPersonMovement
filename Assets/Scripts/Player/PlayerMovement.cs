@@ -8,13 +8,14 @@ using UnityEngine.PlayerLoop;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    private float moveSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
+    [SerializeField] private float crouchSpeed;
+    [Space(10)]
     [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
-    [SerializeField] private float airMultiplier;
-
+    private float moveSpeed;
+    
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
     
@@ -22,19 +23,19 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isWallrunning;
     [HideInInspector] public bool isCrouching;
     
+    [Space(10)]
+    [SerializeField] private float airMultiplier;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
     
+    [Space(10)]
     [SerializeField] private float groundDrag;
     
-    [Header("Crouch Settings")] 
-    [SerializeField] private float crouchSpeed;
-    [SerializeField] private float crouchYScale;
-    internal float startYScale;
+    [HideInInspector] public float startYScale;
     
     [Header("Keybinds")] 
-    [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode runKey = KeyCode.LeftShift;
+    public KeyCode crouchKey = KeyCode.LeftControl;
         
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
@@ -119,22 +120,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        
-        // Start crouch
-        if (Input.GetKeyDown(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-
-            isCrouching = true;
-        }
-        else if (Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-
-            isCrouching = false;
-        }
-        
     }
 
     private void StateHandler()

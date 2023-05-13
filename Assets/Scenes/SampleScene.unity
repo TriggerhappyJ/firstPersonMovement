@@ -2226,7 +2226,9 @@ GameObject:
   - component: {fileID: 1088543152}
   - component: {fileID: 1088543153}
   - component: {fileID: 1088543154}
+  - component: {fileID: 1088543157}
   - component: {fileID: 1088543155}
+  - component: {fileID: 1088543158}
   - component: {fileID: 1088543156}
   m_Layer: 0
   m_Name: Player
@@ -2283,20 +2285,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 10
   runSpeed: 15
+  crouchSpeed: 5
   maxSlideSpeed: 100
   maxWallRunSpeed: 8.5
   isSliding: 0
   isWallrunning: 0
   isCrouching: 0
+  airMultiplier: 0.4
   speedIncreaseMultiplier: 10
   slopeIncreaseMultiplier: 5
   groundDrag: 4
-  jumpForce: 12
-  jumpCooldown: 0.25
-  airMultiplier: 0.4
-  crouchSpeed: 5
-  crouchYScale: 0.5
-  jumpKey: 32
+  startYScale: 0
   runKey: 304
   crouchKey: 99
   playerHeight: 2
@@ -2305,11 +2304,13 @@ MonoBehaviour:
     m_Bits: 256
   isGrounded: 0
   maxSlopeAngle: 50
+  exitingSlope: 0
   orientation: {fileID: 405897551}
   velocityText: {fileID: 21406127}
   stateText: {fileID: 925615835}
   cam: {fileID: 963194232}
-  camTilt: {x: 10, y: 0, z: 0}
+  defaultFov: 80
+  defaultTilt: {x: 0, y: 0, z: 0}
   state: 0
 --- !u!114 &1088543155
 MonoBehaviour:
@@ -2323,16 +2324,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b56b003c18ea5474bbc9e673a99292f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orientation: {fileID: 405897551}
   playerObject: {fileID: 1573256963}
   maxSlideTime: 1
   slideForce: 30
   slideCooldown: 1.2
   slideYScale: 0.5
   slideKey: 306
-  cam: {fileID: 963194232}
-  camFov: 90
-  camTilt: {x: 5, y: 0, z: 0}
+  slideCamFov: 90
+  slideCamTilt: {x: 10, y: 0, z: 0}
 --- !u!114 &1088543156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2348,9 +2347,6 @@ MonoBehaviour:
   wallMask:
     serializedVersion: 2
     m_Bits: 256
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 256
   wallRunForce: 200
   wallJumpUpForce: 7
   wallJumpAwayForce: 5
@@ -2363,10 +2359,42 @@ MonoBehaviour:
   gravityCounterForce: 26
   wallDistanceCheck: 0.7
   minJumpHeight: 2
-  orientation: {fileID: 405897551}
-  cam: {fileID: 963194232}
-  camFov: 90
-  camTilt: {x: 0, y: 0, z: 5}
+  wallCamFov: 90
+  wallCamTilt: {x: 0, y: 0, z: 10}
+--- !u!114 &1088543157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088543150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96969a6b7d9d28543b12ababf89231a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 15
+  jumpCooldown: 0.1
+  canJump: 1
+  canDoubleJump: 1
+  jumpKey: 32
+  jumpCamFov: 0
+  jumpCamTilt: {x: 5, y: 0, z: 0}
+--- !u!114 &1088543158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088543150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cb30ede51a2a4146b8b5f86eabcf9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crouchYScale: 0.5
+  crouchCamFov: 75
+  crouchCamTilt: {x: 0, y: 0, z: 0}
 --- !u!1 &1133128086
 GameObject:
   m_ObjectHideFlags: 0

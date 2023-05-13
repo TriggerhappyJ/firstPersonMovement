@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSliding : MonoBehaviour
+public class PlayerSlide : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform playerObject;
@@ -105,7 +105,6 @@ public class PlayerSliding : MonoBehaviour
         transform.localScale = new Vector3(playerObject.localScale.x, pMovement.startYScale, playerObject.localScale.z);
         
         // Reset camera
-        pMovement.cam.DoFov(80f);
-        pMovement.cam.DoTilt(new Vector3(0,0,0));
+        pMovement.ResetCamera();
     }
 }
