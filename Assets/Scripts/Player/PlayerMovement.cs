@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         SpeedController();
         StateHandler();
         
-        // Apply drag, set double jump availability
+        // Apply drag
         if (isGrounded)
         {
             rBody.drag = groundDrag;
@@ -283,10 +283,11 @@ public class PlayerMovement : MonoBehaviour
 
     public bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f) && isGrounded)
         {
+            
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle < maxSlopeAngle && angle != 0;
+            return angle != 0 && angle < maxSlopeAngle;
         }
 
         return false;
