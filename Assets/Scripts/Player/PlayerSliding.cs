@@ -32,14 +32,14 @@ public class PlayerSliding : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide)
+        if (Input.GetKey(slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
         {
             canSlide = false;
             StartSlide();
             Invoke(nameof(ResetSlide), slideCooldown);
         }
         
-        if (Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.state == PlayerMovement.MovementState.sliding)
+        if ((Input.GetKeyUp(slideKey) && pMovement.isSliding || pMovement.rBody.velocity.magnitude <= 0.1f) && pMovement.isSliding)
         {
             StopSlide();
         }
@@ -63,7 +63,10 @@ public class PlayerSliding : MonoBehaviour
         slideTimer = maxSlideTime;
         
         // Set camera effects
-        pMovement.cam.DoFov(slideCamFov);
+        if (slideCamFov > 0)
+        {
+            pMovement.cam.DoFov(slideCamFov);
+        }
         pMovement.cam.DoTilt(slideCamTilt);
     }
 

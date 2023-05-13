@@ -9,10 +9,11 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     private float moveSpeed;
-    static float walkSpeed;
+    [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
+    [SerializeField] private float airMultiplier;
 
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
@@ -26,44 +27,31 @@ public class PlayerMovement : MonoBehaviour
     
     [SerializeField] private float groundDrag;
     
-    [Header("Jump Settings")]
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float jumpCooldown;
-    [SerializeField] private float airMultiplier;
-    
-    private bool canJump = true;
-    private bool canDoubleJump = true;
-    
-
     [Header("Crouch Settings")] 
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float crouchYScale;
     internal float startYScale;
     
-        
     [Header("Keybinds")] 
-    public KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
         
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
-    [SerializeField] internal LayerMask groundMask;
-    [SerializeField] private bool isGrounded;
+    public LayerMask groundMask;
+    [HideInInspector] public bool isGrounded;
     
     [Header("Slope Check")]
     [SerializeField] private float maxSlopeAngle;
     private RaycastHit slopeHit;
-    private bool exitingSlope;
+    [HideInInspector] public bool exitingSlope;
     
-    [SerializeField] internal Transform orientation;
+    public Transform orientation;
     [SerializeField] private TextMeshProUGUI velocityText;
     [SerializeField] private TextMeshProUGUI stateText;
 
     [Header("Camera Effects")]
-    [SerializeField] internal PlayerCam cam;
-    [SerializeField] private float camFov;
-    [SerializeField] private Vector3 camTilt;
+    public PlayerCam cam;
     [SerializeField] private float defaultFov;
     [SerializeField] private Vector3 defaultTilt;
 
@@ -107,12 +95,7 @@ public class PlayerMovement : MonoBehaviour
         // Apply drag, set double jump availability
         if (isGrounded)
         {
-            canDoubleJump = true;
             rBody.drag = groundDrag;
-        }
-        else if (isWallrunning)
-        {
-            canDoubleJump = true;
         }
         else
         {
@@ -136,20 +119,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        
-        // Jump logic
-        if (Input.GetKey(jumpKey) && canJump && isGrounded && state != MovementState.wallrunning)
-        {
-            canJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
-        } 
-        else if (Input.GetKeyDown(jumpKey) && !isGrounded && canDoubleJump && state != MovementState.crouching && state != MovementState.wallrunning)
-        {
-            canDoubleJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
         
         // Start crouch
         if (Input.GetKeyDown(crouchKey))
@@ -302,41 +271,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Jump()
-    {
-        exitingSlope = true;
-        
-        // Reset y velocity
-        rBody.velocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
-        
-        rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-        
-        // Add camera effects
-        cam.DoTilt(camTilt);
-    }
-
-    // Made to fix problem with downwards velocity (turns out the jump wasn't the issue :/)
-    /*private void DoubleJump()
-    {
-        // If player is moving downwards, cancel out their downwards velocity and then jump
-        if (rBody.velocity.y <= 0)
-        {
-            Vector3 velocityReverse = new Vector3(0f, rBody.velocity.y * -1, 0f);
-            rBody.AddForce(transform.up * jumpForce + velocityReverse, ForceMode.Impulse);
-            return;
-        }
-        
-        // If the player is already moving upwards, just jump
-        rBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }*/
-
-    private void ResetJump()
-    {
-        canJump = true;
-
-        exitingSlope = false;
-        ResetCamera();
-    }
+    
 
     private void SpeedController()
     {
@@ -351,14 +286,14 @@ public class PlayerMovement : MonoBehaviour
         // Limit speed in air or on ground
         else
         {
-            Vector3 flatVelocity = new Vector3(rBody.velocity.x, rBody.velocity.y, rBody.velocity.z);
+            Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
             // Debug.Log(flatVelocity.normalized + " vs " + moveSpeed);
 
             // Clamp velocity when needed
             if (flatVelocity.magnitude > moveSpeed)
             {
                 Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
-                Debug.Log(limitedVelocity);
+                //Debug.Log(limitedVelocity);
                 rBody.velocity = new Vector3(limitedVelocity.x, rBody.velocity.y, limitedVelocity.z);
             }
         }

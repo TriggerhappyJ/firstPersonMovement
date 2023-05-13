@@ -42,10 +42,12 @@ public class PlayerWallRunning : MonoBehaviour
     [SerializeField] private Vector3 wallCamTilt;
     
     private PlayerMovement pMovement;
+    private PlayerJump pJump;
 
     private void Start()
     {
         pMovement = GetComponent<PlayerMovement>();
+        pJump = GetComponent<PlayerJump>();
     }
     
     private void Update()
@@ -98,7 +100,7 @@ public class PlayerWallRunning : MonoBehaviour
                 exitWallTimer = exitWallTime;
             }
 
-            if (Input.GetKeyDown(pMovement.jumpKey))
+            if (Input.GetKeyDown(pJump.jumpKey))
             {
                 WallJump();
             }
@@ -138,7 +140,11 @@ public class PlayerWallRunning : MonoBehaviour
         pMovement.rBody.velocity = new Vector3(pMovement.rBody.velocity.x, 0f, pMovement.rBody.velocity.z);
 
         // Set camera effects
-        pMovement.cam.DoFov(wallCamFov);
+        if (wallCamFov > 0)
+        {
+            pMovement.cam.DoFov(wallCamFov);
+        }
+
         if (wallLeft)
         {
             pMovement.cam.DoTilt(wallCamTilt * -1);
