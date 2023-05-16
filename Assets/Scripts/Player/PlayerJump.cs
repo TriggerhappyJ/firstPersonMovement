@@ -33,13 +33,13 @@ public class PlayerJump : MonoBehaviour
         }
         
         // Jump logic
-        if (Input.GetKey(pKeybinds.jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.wallrunning)
+        if (Input.GetKey(pKeybinds.jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.Wallrunning)
         {
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         } 
-        else if (Input.GetKeyDown(pKeybinds.jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.crouching && pMovement.state != PlayerMovement.MovementState.wallrunning)
+        else if (Input.GetKeyDown(pKeybinds.jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.Crouching && pMovement.state != PlayerMovement.MovementState.Wallrunning)
         {
             canDoubleJump = false;
             Jump();

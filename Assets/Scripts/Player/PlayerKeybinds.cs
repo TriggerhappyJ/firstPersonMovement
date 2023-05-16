@@ -13,4 +13,8 @@ public class PlayerKeybinds : MonoBehaviour
     [Header("Wall Run Special Keys")]
     public KeyCode wallUpwardsKey = KeyCode.LeftShift;
     public KeyCode wallDownwardsKey = KeyCode.LeftControl;
+
+    [Header("Ability Keys")] 
+    public KeyCode speedBoostKey = KeyCode.E;
+    public KeyCode dashKey = KeyCode.Q;
 }

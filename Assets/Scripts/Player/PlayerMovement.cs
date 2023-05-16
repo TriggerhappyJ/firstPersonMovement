@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
-    
+
     [HideInInspector] public bool isSliding;
     [HideInInspector] public bool isWallrunning;
     [HideInInspector] public bool isCrouching;
@@ -57,20 +57,21 @@ public class PlayerMovement : MonoBehaviour
     
     private Vector3 moveDirection;
 
-    internal Rigidbody rBody;
+    [HideInInspector] public Rigidbody rBody;
 
     [HideInInspector] public MovementState state;
     private float playerVelocity;
     private PlayerKeybinds pKeybinds;
+    private SpeedBoost speedBoost;
     
     public enum MovementState
     {
-        walking,
-        running,
-        wallrunning,
-        crouching,
-        sliding,
-        midair
+        Walking,
+        Running,
+        Wallrunning,
+        Crouching,
+        Sliding,
+        Midair
     }
 
     private void Start()
@@ -79,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
         rBody.freezeRotation = true;
         
         pKeybinds = GetComponent<PlayerKeybinds>();
+        speedBoost = GetComponent<SpeedBoost>();
         
         startYScale = transform.localScale.y;
     }
@@ -105,6 +107,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Add boost to speed
+        moveSpeed *= speedBoost.currentSpeedMultiplier;
+        
         MovePlayer();
         
         // Update player forwards velocity variable with rigidbody velocity
@@ -126,14 +131,14 @@ public class PlayerMovement : MonoBehaviour
         // Set wall running state
         if (isWallrunning)
         {
-            state = MovementState.wallrunning;
+            state = MovementState.Wallrunning;
             desiredMoveSpeed = maxWallRunSpeed;
         }
         
         // Set sliding state
         else if (isSliding)
         {
-            state = MovementState.sliding;
+            state = MovementState.Sliding;
 
             if (OnSlope() && rBody.velocity.y < -0.2f)
             {
@@ -141,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (!isGrounded && !OnSlope())
             {
-                state = MovementState.midair;
+                state = MovementState.Midair;
             }
             else
             {
@@ -151,28 +156,28 @@ public class PlayerMovement : MonoBehaviour
         // Set crouch state
         else if (isCrouching)
         {
-            state = MovementState.crouching;
+            state = MovementState.Crouching;
             desiredMoveSpeed = crouchSpeed;
         }
         
         // Set run state
         else if (isGrounded && Input.GetKey(pKeybinds.runKey))
         {
-            state = MovementState.running;
+            state = MovementState.Running;
             desiredMoveSpeed = runSpeed;
         }
         
         // Set walk state
         else if (isGrounded)
         {
-            state = MovementState.walking;
+            state = MovementState.Walking;
             desiredMoveSpeed = walkSpeed;
         }
         
         // Set midair state
         else
         {
-            state = MovementState.midair;
+            state = MovementState.Midair;
         }
         
         // Check if the desired move speed has largely changed
@@ -181,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
-        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.walking || state == MovementState.running) && moveSpeed <= 10))
+        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.Walking || state == MovementState.Running) && moveSpeed <= 10))
         {
             StopAllCoroutines();
             moveSpeed = desiredMoveSpeed;

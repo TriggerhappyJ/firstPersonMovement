@@ -2332,6 +2332,7 @@ GameObject:
   - component: {fileID: 1088543155}
   - component: {fileID: 1088543158}
   - component: {fileID: 1088543156}
+  - component: {fileID: 1088543160}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2411,6 +2412,7 @@ MonoBehaviour:
   cam: {fileID: 963194232}
   defaultFov: 80
   defaultTilt: {x: 0, y: 0, z: 0}
+  rBody: {fileID: 0}
   state: 0
 --- !u!114 &1088543155
 MonoBehaviour:
@@ -2509,6 +2511,27 @@ MonoBehaviour:
   jumpKey: 32
   wallUpwardsKey: 304
   wallDownwardsKey: 306
+  speedBoostKey: 101
+  dashKey: 113
+--- !u!114 &1088543160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088543150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95e07aeff31194242837e07c06c6b220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedBoostMultiplier: 2
+  speedBoostDuration: 2
+  speedBoostCooldown: 4
+  canSpeedBoost: 1
+  currentSpeedMultiplier: 0
+  speedBoostCamFov: 100
+  speedBoostCamTilt: {x: 0, y: 0, z: 0}
 --- !u!1 &1133128086
 GameObject:
   m_ObjectHideFlags: 0
