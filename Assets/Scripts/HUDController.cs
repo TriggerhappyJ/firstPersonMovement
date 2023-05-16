@@ -18,10 +18,8 @@ public class HUDController : MonoBehaviour
 
     private IEnumerator DoCountdown(float currentCountdown)
     {
-        Debug.Log("Countdown is underway!");
         while (currentCountdown > 0)
         {
-            Debug.Log("Counted down once! " + currentCountdown);
             boostText.text = currentCountdown.ToString("F0");
             yield return new WaitForSeconds(1f);
             currentCountdown--;
