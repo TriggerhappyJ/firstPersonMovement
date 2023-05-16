@@ -17,8 +17,10 @@ public class SpeedBoost : MonoBehaviour
     [SerializeField] private float speedBoostCamFov;
     [SerializeField] private Vector3 speedBoostCamTilt;
 
+    [Header("References")]
     private PlayerMovement pMovement;
     private PlayerKeybinds pKeybinds;
+    public HUDController hud;
 
     private void Start()
     {
@@ -56,6 +58,8 @@ public class SpeedBoost : MonoBehaviour
     {
         currentSpeedMultiplier = 1f;
         
+        hud.StartCountdown(speedBoostCooldown);
+
         // Reset camera
         pMovement.ResetCamera();
     }
