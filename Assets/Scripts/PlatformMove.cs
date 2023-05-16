@@ -23,7 +23,8 @@ public class PlatformMove : MonoBehaviour
     {
         platform.position = Vector3.Lerp(startPosition, finalPosition, Mathf.PingPong(Time.time * moveSpeed, 1));
         
-        // Move platform using force
+        // Get platforms velocity and apply it to player
+        
         
     }
 }
