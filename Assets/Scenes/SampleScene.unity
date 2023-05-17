@@ -2348,7 +2348,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088543150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: -13.8, y: 1, z: 24.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2391,9 +2391,11 @@ MonoBehaviour:
   crouchSpeed: 5
   maxSlideSpeed: 100
   maxWallRunSpeed: 8.5
+  moveSpeed: 0
   isSliding: 0
   isWallrunning: 0
   isCrouching: 0
+  isBoosting: 0
   airMultiplier: 0.4
   speedIncreaseMultiplier: 10
   slopeIncreaseMultiplier: 5
@@ -2412,6 +2414,7 @@ MonoBehaviour:
   cam: {fileID: 963194232}
   defaultFov: 80
   defaultTilt: {x: 0, y: 0, z: 0}
+  moveDirection: {x: 0, y: 0, z: 0}
   rBody: {fileID: 0}
   state: 0
 --- !u!114 &1088543155
@@ -2525,7 +2528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e07aeff31194242837e07c06c6b220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedBoostMultiplier: 5
+  speedBoostMultiplier: 1.5
   speedBoostDuration: 2
   speedBoostCooldown: 4
   canSpeedBoost: 1
@@ -2844,7 +2847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e4eb75097dcab4b8da4bb3a380b54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostText: {fileID: 1718357045}
+  cooldownText: {fileID: 1718357045}
 --- !u!1 &1229694631
 GameObject:
   m_ObjectHideFlags: 0
@@ -3259,7 +3262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1482004151}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8, z: 0}
+  m_LocalPosition: {x: -13.8, y: 1.8, z: 24.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3584,7 +3587,7 @@ GameObject:
   - component: {fileID: 1718357046}
   - component: {fileID: 1718357045}
   m_Layer: 5
-  m_Name: Boost Text
+  m_Name: Cooldown Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

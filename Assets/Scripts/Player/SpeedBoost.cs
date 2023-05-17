@@ -34,11 +34,19 @@ public class SpeedBoost : MonoBehaviour
         if (Input.GetKeyDown(pKeybinds.speedBoostKey) && canSpeedBoost && !pMovement.isSliding)
         {
             canSpeedBoost = false;
+            pMovement.isBoosting = true;
             StartBoost();
             Invoke(nameof(ResetBoost), speedBoostDuration+speedBoostCooldown);
         }
-        
-        Debug.Log(currentSpeedMultiplier);
+    }
+
+    private void FixedUpdate()
+    {
+        if (pMovement.isBoosting)
+        {
+            Debug.Log("Doing boost movement");
+            BoostMovement();
+        }
     }
 
     private void StartBoost()
@@ -54,9 +62,18 @@ public class SpeedBoost : MonoBehaviour
         pMovement.cam.DoTilt(speedBoostCamTilt);
     }
 
+    private void BoostMovement()
+    {
+        Vector3 inputDirection = pMovement.orientation.forward * pMovement.verticalInput + pMovement.orientation.right * pMovement.horizontalInput;
+
+        pMovement.rBody.AddForce(inputDirection.normalized * currentSpeedMultiplier, ForceMode.Force);
+    }
+
     private void StopBoost()
     {
         currentSpeedMultiplier = 1f;
+
+        pMovement.isBoosting = false;
         
         hud.StartCountdown(speedBoostCooldown);
 

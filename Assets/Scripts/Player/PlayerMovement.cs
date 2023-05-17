@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [Space(10)]
     [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
-    private float moveSpeed;
+    public float moveSpeed;
     
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isSliding;
     [HideInInspector] public bool isWallrunning;
     [HideInInspector] public bool isCrouching;
+    [HideInInspector] public bool isBoosting;
     
     [Space(10)]
     [SerializeField] private float airMultiplier;
@@ -54,8 +55,8 @@ public class PlayerMovement : MonoBehaviour
 
     internal float horizontalInput;
     internal float verticalInput;
-    
-    private Vector3 moveDirection;
+
+    public Vector3 moveDirection;
 
     [HideInInspector] public Rigidbody rBody;
 
@@ -108,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         // Add boost to speed
-        moveSpeed *= speedBoost.currentSpeedMultiplier;
+        // moveSpeed *= speedBoost.currentSpeedMultiplier;
         
         MovePlayer();
         
@@ -274,13 +275,11 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             Vector3 flatVelocity = new Vector3(rBody.velocity.x, 0f, rBody.velocity.z);
-            // Debug.Log(flatVelocity.normalized + " vs " + moveSpeed);
 
             // Clamp velocity when needed
             if (flatVelocity.magnitude > moveSpeed)
             {
-                Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
-                //Debug.Log(limitedVelocity);
+                Vector3 limitedVelocity = flatVelocity.normalized * (moveSpeed * speedBoost.currentSpeedMultiplier);
                 rBody.velocity = new Vector3(limitedVelocity.x, rBody.velocity.y, limitedVelocity.z);
             }
         }
