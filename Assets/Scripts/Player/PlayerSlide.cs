@@ -56,7 +56,7 @@ public class PlayerSlide : MonoBehaviour
     {
         pMovement.isSliding = true;
         
-        transform.localScale = new Vector3(playerObject.localScale.x, slideYScale, playerObject.localScale.z);
+        transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
         pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         
         slideTimer = maxSlideTime;
@@ -100,8 +100,8 @@ public class PlayerSlide : MonoBehaviour
     private void StopSlide()
     {
         pMovement.isSliding = false;
-        
-        transform.localScale = new Vector3(playerObject.localScale.x, pMovement.startYScale, playerObject.localScale.z);
+
+        transform.localScale = new Vector3(transform.localScale.x, pMovement.startYScale, transform.localScale.z);
         
         // Reset camera
         pMovement.ResetCamera();

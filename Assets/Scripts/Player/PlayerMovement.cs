@@ -7,15 +7,15 @@ using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float walkSpeed;
+    [Header("Movement Settings")] [SerializeField]
+    private float walkSpeed;
+
     [SerializeField] private float runSpeed;
     [SerializeField] private float crouchSpeed;
-    [Space(10)]
-    [SerializeField] private float maxSlideSpeed;
+    [Space(10)] [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
     public float moveSpeed;
-    
+
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
 
@@ -23,33 +23,32 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isWallrunning;
     [HideInInspector] public bool isCrouching;
     [HideInInspector] public bool isBoosting;
-    
-    [Space(10)]
-    [SerializeField] private float airMultiplier;
+
+    [Space(10)] [SerializeField] private float airMultiplier;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
-    
-    [Space(10)]
-    [SerializeField] private float groundDrag;
-    
+
+    [Space(10)] [SerializeField] private float groundDrag;
+
     [HideInInspector] public float startYScale;
 
-    [Header("Ground Check")] 
-    [SerializeField] private float playerHeight;
+    [Header("Ground Check")] [SerializeField]
+    private float playerHeight;
+
     public LayerMask groundMask;
     [HideInInspector] public bool isGrounded;
-    
-    [Header("Slope Check")]
-    [SerializeField] private float maxSlopeAngle;
+
+    [Header("Slope Check")] [SerializeField]
+    private float maxSlopeAngle;
+
     private RaycastHit slopeHit;
     [HideInInspector] public bool exitingSlope;
-    
+
     public Transform orientation;
     [SerializeField] private TextMeshProUGUI velocityText;
     [SerializeField] private TextMeshProUGUI stateText;
 
-    [Header("Camera Effects")]
-    public PlayerCam cam;
+    [Header("Camera Effects")] public PlayerCam cam;
     [SerializeField] private float defaultFov;
     [SerializeField] private Vector3 defaultTilt;
 
@@ -64,7 +63,9 @@ public class PlayerMovement : MonoBehaviour
     private float playerVelocity;
     private PlayerKeybinds pKeybinds;
     private SpeedBoost speedBoost;
-    
+
+    private Vector3 platformVelocity;
+
     public enum MovementState
     {
         Walking,
@@ -79,10 +80,10 @@ public class PlayerMovement : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody>();
         rBody.freezeRotation = true;
-        
+
         pKeybinds = GetComponent<PlayerKeybinds>();
         speedBoost = GetComponent<SpeedBoost>();
-        
+
         startYScale = transform.localScale.y;
     }
 
@@ -94,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         Inputs();
         SpeedController();
         StateHandler();
-        
+
         // Apply drag
         if (isGrounded)
         {
@@ -110,12 +111,12 @@ public class PlayerMovement : MonoBehaviour
     {
         // Add boost to speed
         // moveSpeed *= speedBoost.currentSpeedMultiplier;
-        
+
         MovePlayer();
-        
+
         // Update player forwards velocity variable with rigidbody velocity
         playerVelocity = rBody.velocity.magnitude;
-        
+
         // Update HUD text
         velocityText.text = "Velocity: " + Math.Round(playerVelocity, 2) + " m/s";
         stateText.text = "State: " + state;
@@ -135,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
             state = MovementState.Wallrunning;
             desiredMoveSpeed = maxWallRunSpeed;
         }
-        
+
         // Set sliding state
         else if (isSliding)
         {
@@ -160,34 +161,34 @@ public class PlayerMovement : MonoBehaviour
             state = MovementState.Crouching;
             desiredMoveSpeed = crouchSpeed;
         }
-        
+
         // Set run state
         else if (isGrounded && Input.GetKey(pKeybinds.runKey))
         {
             state = MovementState.Running;
             desiredMoveSpeed = runSpeed;
         }
-        
+
         // Set walk state
         else if (isGrounded)
         {
             state = MovementState.Walking;
             desiredMoveSpeed = walkSpeed;
         }
-        
+
         // Set midair state
         else
         {
             state = MovementState.Midair;
         }
-        
+
         // Check if the desired move speed has largely changed
         if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 8f && moveSpeed != 0)
         {
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
-        else if((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.Walking || state == MovementState.Running) && moveSpeed <= 10))
+        else if ((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.Walking || state == MovementState.Running) && moveSpeed <= 10))
         {
             StopAllCoroutines();
             moveSpeed = desiredMoveSpeed;
@@ -221,9 +222,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 time += Time.deltaTime * speedIncreaseMultiplier;
             }
+
             yield return null;
         }
-        
+
         moveSpeed = desiredMoveSpeed;
     }
 
@@ -242,25 +244,25 @@ public class PlayerMovement : MonoBehaviour
                 rBody.AddForce(Vector3.down * 80f, ForceMode.Force);
             }
         }
-        
+
         // On ground
         else if (isGrounded)
         {
-            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f), ForceMode.Force);
-        } 
+            rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f) + platformVelocity, ForceMode.Force);
+        }
         // midair
         else if (!isGrounded)
         {
             rBody.AddForce(moveDirection.normalized * (moveSpeed * 10f * airMultiplier), ForceMode.Force);
         }
-        
+
         // Turns gravity off while on slope
         if (!isWallrunning)
         {
             rBody.useGravity = !OnSlope();
         }
     }
-    
+
     private void SpeedController()
     {
         // Limit speed on slope
@@ -287,9 +289,9 @@ public class PlayerMovement : MonoBehaviour
 
     public bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f) && isGrounded)
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f) && isGrounded)
         {
-            
+
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle != 0 && angle < maxSlopeAngle;
         }
@@ -306,5 +308,10 @@ public class PlayerMovement : MonoBehaviour
     {
         cam.DoFov(defaultFov);
         cam.DoTilt(defaultTilt);
+    }
+
+    public void addPlatformVelocity(Vector3 velocity)
+    {
+        platformVelocity = velocity;
     }
 }
