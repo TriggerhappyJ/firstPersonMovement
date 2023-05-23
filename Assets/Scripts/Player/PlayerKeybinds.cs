@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class PlayerKeybinds : MonoBehaviour
 {
-    [Header("Main Movement Keys")] 
+    [Header("Core Movement Keys")]
+    public KeyCode forwardKey = KeyCode.W;
+    public KeyCode backwardKey = KeyCode.S;
+    public KeyCode leftKey = KeyCode.A;
+    public KeyCode rightKey = KeyCode.D;
+    
+    [Header("Movement Action Keys")] 
     public KeyCode runKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
     public KeyCode slideKey = KeyCode.LeftControl;
@@ -17,4 +23,5 @@ public class PlayerKeybinds : MonoBehaviour
     [Header("Ability Keys")] 
     public KeyCode speedBoostKey = KeyCode.E;
     public KeyCode dashKey = KeyCode.Q;
+    public KeyCode swingKey = KeyCode.Mouse0;
 }

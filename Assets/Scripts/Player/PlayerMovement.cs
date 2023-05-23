@@ -7,13 +7,14 @@ using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")] [SerializeField]
-    private float walkSpeed;
+    [Header("Movement Settings")] 
+    [SerializeField] private float walkSpeed;
 
     [SerializeField] private float runSpeed;
     [SerializeField] private float crouchSpeed;
     [Space(10)] [SerializeField] private float maxSlideSpeed;
     [SerializeField] private float maxWallRunSpeed;
+    [SerializeField] private float maxSwingSpeed;
     public float moveSpeed;
 
     private float desiredMoveSpeed;
@@ -24,8 +25,10 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isCrouching;
     [HideInInspector] public bool isBoosting;
     [HideInInspector] public bool isDashing;
+    [HideInInspector] public bool isSwinging;
 
-    [Space(10)] [SerializeField] private float airMultiplier;
+    [Space(10)] 
+    [SerializeField] private float airMultiplier;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
 
@@ -33,14 +36,14 @@ public class PlayerMovement : MonoBehaviour
 
     [HideInInspector] public float startYScale;
 
-    [Header("Ground Check")] [SerializeField]
-    private float playerHeight;
+    [Header("Ground Check")] 
+    [SerializeField] private float playerHeight;
 
     public LayerMask groundMask;
     [HideInInspector] public bool isGrounded;
 
-    [Header("Slope Check")] [SerializeField]
-    private float maxSlopeAngle;
+    [Header("Slope Check")] 
+    [SerializeField] private float maxSlopeAngle;
 
     private RaycastHit slopeHit;
     [HideInInspector] public bool exitingSlope;
@@ -49,12 +52,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI velocityText;
     [SerializeField] private TextMeshProUGUI stateText;
 
-    [Header("Camera Effects")] public PlayerCam cam;
+    [Header("Camera Effects")] 
+    public PlayerCam cam;
     [SerializeField] private float defaultFov;
     [SerializeField] private Vector3 defaultTilt;
 
-    internal float horizontalInput;
-    internal float verticalInput;
+    [HideInInspector] public float horizontalInput;
+    [HideInInspector] public float verticalInput;
 
     public Vector3 moveDirection;
 
@@ -66,9 +70,12 @@ public class PlayerMovement : MonoBehaviour
     private SpeedBoost speedBoost;
 
     private Vector3 platformVelocity;
+    
 
     public enum MovementState
     {
+        Swinging,
+        Dashing,
         Walking,
         Running,
         Wallrunning,
@@ -156,6 +163,20 @@ public class PlayerMovement : MonoBehaviour
                 desiredMoveSpeed = runSpeed;
             }
         }
+        
+        // Set dashing state
+        else if (isDashing)
+        {
+            state = MovementState.Dashing;
+        }
+        
+        // Set swinging state
+        else if (isSwinging)
+        {
+            state = MovementState.Swinging;
+            desiredMoveSpeed = maxSwingSpeed;
+        }
+        
         // Set crouch state
         else if (isCrouching)
         {
@@ -232,6 +253,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+        if (isSwinging) return;
+        
         // Calculate players move direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
