@@ -28,7 +28,7 @@ public class PlayerDash : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(pKeybinds.dashKey) && canDash && !pMovement.OnSlope())
+        if (Input.GetKeyDown(pKeybinds.dashKey) && canDash && !pMovement.OnSlope() && pMovement.moveDirection.magnitude != 0)
         {
             canDash = false;
             pMovement.isDashing = true;
