@@ -32,7 +32,8 @@ public class PlayerMovement : MonoBehaviour
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
 
-    [Space(10)] [SerializeField] private float groundDrag;
+    [Space(10)] 
+    [SerializeField] private float groundDrag;
 
     [HideInInspector] public float startYScale;
 

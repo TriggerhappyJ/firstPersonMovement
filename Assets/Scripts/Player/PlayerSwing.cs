@@ -11,6 +11,10 @@ public class PlayerSwing : MonoBehaviour
     [SerializeField] private float maxSwingDistance = 25f;
     [SerializeField] private float horizontalThrust;
     [SerializeField] private float forwardThrust;
+    [Space(10)]
+    [SerializeField] private float swingSpring;
+    [SerializeField] private float swingDamper;
+    [SerializeField] private float swingMass;
     private Vector3 swingPoint;
     private SpringJoint joint;
 
@@ -120,13 +124,13 @@ public class PlayerSwing : MonoBehaviour
         float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
             
         // The distance grapple will try to keep from grapple point
-        joint.maxDistance = distanceFromPoint * 0.8f;
-        joint.minDistance = distanceFromPoint * 0.25f;
+        joint.maxDistance = Mathf.Lerp(distanceFromPoint * 0.75f, distanceFromPoint * 0.20f, 2f);
+        joint.minDistance = distanceFromPoint * 0.20f;
             
         // Swing joint config
-        joint.spring = 4.5f;
-        joint.damper = 7f;
-        joint.massScale = 4.5f;
+        joint.spring = swingSpring;
+        joint.damper = swingDamper;
+        joint.massScale = swingMass;
             
         lRenderer.positionCount = 2;
         currentSwingPosition = swingTip.position;
