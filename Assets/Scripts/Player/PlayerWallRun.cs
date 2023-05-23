@@ -140,21 +140,6 @@ public class PlayerWallRun : MonoBehaviour
         wallRunTimer = maxWallRunTime;
         
         pMovement.rBody.velocity = new Vector3(pMovement.rBody.velocity.x, 0f, pMovement.rBody.velocity.z);
-
-        // Set camera effects
-        if (wallCamFov > 0)
-        {
-            pMovement.cam.DoFov(wallCamFov);
-        }
-
-        if (wallLeft)
-        {
-            pMovement.cam.DoTilt(wallCamTilt * -1);
-        } 
-        else if (wallRight)
-        {
-            pMovement.cam.DoTilt(wallCamTilt);
-        }
     }
     
     private void WallRunMovement()
@@ -194,6 +179,21 @@ public class PlayerWallRun : MonoBehaviour
         if (useGravity)
         {
             pMovement.rBody.AddForce(transform.up * gravityCounterForce, ForceMode.Force);
+        }
+        
+        // Set camera effects
+        if (wallCamFov > 0)
+        {
+            pMovement.cam.DoFov(wallCamFov);
+        }
+
+        if (wallLeft)
+        {
+            pMovement.cam.DoTilt(wallCamTilt * -1);
+        } 
+        else if (wallRight)
+        {
+            pMovement.cam.DoTilt(wallCamTilt);
         }
     }
     

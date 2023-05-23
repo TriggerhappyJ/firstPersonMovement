@@ -32,7 +32,7 @@ public class SpeedBoost : MonoBehaviour
     private void Update()
     {
         // Activate speed boost if key pressed and boost is available
-        if (Input.GetKeyDown(pKeybinds.speedBoostKey) && canSpeedBoost && !pMovement.isSliding)
+        if (Input.GetKeyDown(pKeybinds.speedBoostKey) && canSpeedBoost && !pMovement.isSliding && !pMovement.isSwinging)
         {
             canSpeedBoost = false;
             pMovement.isBoosting = true;
@@ -43,9 +43,8 @@ public class SpeedBoost : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (pMovement.isBoosting)
+        if (pMovement.isBoosting && !pMovement.isSwinging)
         {
-            Debug.Log("Doing boost movement");
             BoostMovement();
         }
     }
