@@ -63,6 +63,7 @@ public class PlayerSwing : MonoBehaviour
     private void LateUpdate()
     {
         DrawRope();
+        CheckLineOfSight();
     }
 
     private void CheckForSwingPoints()
@@ -181,5 +182,19 @@ public class PlayerSwing : MonoBehaviour
         }
     }
 
-    
+    private void CheckLineOfSight()
+    {
+        // Check if swinging
+        if (predictionHit.point == Vector3.zero) return;
+        
+        // Check if player has line of sight of swing point
+        RaycastHit hit;
+        Physics.Raycast(cam.position, predictionHit.point - cam.position, out hit, maxSwingDistance, swingMask);
+        
+        // Stop swing if player loses line of sight
+        if (hit.point != predictionHit.point)
+        {
+            EndSwing();
+        }
+    }
 }
