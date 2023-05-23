@@ -22,7 +22,6 @@ public class PlatformMove : MonoBehaviour
     
     private void FixedUpdate()
     {
-        
         platform.position = Vector3.Lerp(startPosition, finalPosition, Mathf.PingPong(Time.time * moveSpeed, 1.0f));
     }
 

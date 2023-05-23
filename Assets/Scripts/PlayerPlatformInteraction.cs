@@ -31,7 +31,7 @@ public class PlayerPlatformInteraction : MonoBehaviour
         if (playerIsTouching && pMovement)
         {
             Debug.Log("Sending velocity! "+platformVelocity);
-            pMovement.addPlatformVelocity(platformVelocity);
+            pMovement.AddPlatformVelocity(platformVelocity);
         }
     }
 
@@ -53,7 +53,7 @@ public class PlayerPlatformInteraction : MonoBehaviour
     {
         if (!other.gameObject.CompareTag("Player")) return;
 
-        pMovement.addPlatformVelocity(Vector3.zero);
+        pMovement.AddPlatformVelocity(Vector3.zero);
         playerIsTouching = false;
         
         other.transform.parent = null;

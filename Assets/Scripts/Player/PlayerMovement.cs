@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isWallrunning;
     [HideInInspector] public bool isCrouching;
     [HideInInspector] public bool isBoosting;
+    [HideInInspector] public bool isDashing;
 
     [Space(10)] [SerializeField] private float airMultiplier;
     public float speedIncreaseMultiplier;
@@ -310,7 +311,7 @@ public class PlayerMovement : MonoBehaviour
         cam.DoTilt(defaultTilt);
     }
 
-    public void addPlatformVelocity(Vector3 velocity)
+    public void AddPlatformVelocity(Vector3 velocity)
     {
         platformVelocity = velocity;
     }

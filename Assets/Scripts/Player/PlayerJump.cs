@@ -17,6 +17,8 @@ public class PlayerJump : MonoBehaviour
     
     private PlayerMovement pMovement;
     private PlayerKeybinds pKeybinds;
+
+    private Vector3 platformVelocity;
     
     private void Start()
     {
