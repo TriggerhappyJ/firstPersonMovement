@@ -31,6 +31,7 @@ public class SpeedBoost : MonoBehaviour
     
     private void Update()
     {
+        // Activate speed boost if key pressed and boost is available
         if (Input.GetKeyDown(pKeybinds.speedBoostKey) && canSpeedBoost && !pMovement.isSliding)
         {
             canSpeedBoost = false;
@@ -51,6 +52,7 @@ public class SpeedBoost : MonoBehaviour
 
     private void StartBoost()
     {
+        // Get current multiplier and start duration countdown
         currentSpeedMultiplier = speedBoostMultiplier;
         Invoke(nameof(StopBoost), speedBoostDuration);
         
@@ -64,6 +66,7 @@ public class SpeedBoost : MonoBehaviour
 
     private void BoostMovement()
     {
+        // Get input direction and add boost speed to player's movement
         Vector3 inputDirection = pMovement.orientation.forward * pMovement.verticalInput + pMovement.orientation.right * pMovement.horizontalInput;
 
         pMovement.rBody.AddForce(inputDirection.normalized * currentSpeedMultiplier, ForceMode.Force);
@@ -71,6 +74,7 @@ public class SpeedBoost : MonoBehaviour
 
     private void StopBoost()
     {
+        // Reset speed multiplier and set boost to false
         currentSpeedMultiplier = 1f;
 
         pMovement.isBoosting = false;

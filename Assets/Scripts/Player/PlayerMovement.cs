@@ -211,6 +211,7 @@ public class PlayerMovement : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(ReduceSpeed());
         }
+        // If player stops moving, set everything back to defaults
         else if ((horizontalInput == 0 && verticalInput == 0) || ((state == MovementState.Walking || state == MovementState.Running) && moveSpeed <= 10))
         {
             StopAllCoroutines();
@@ -226,14 +227,17 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator ReduceSpeed()
     {
-        // Smoothly reduces player's move speed back to the desired speed
+        // Set values to reduce speed with
         float time = 0;
         float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
         float startValue = moveSpeed;
 
         while (time < difference)
         {
+            // Reduce the players speed back to the desired move speed
             moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            
+            // Increase speed on slopes based on slope angle
             if (OnSlope())
             {
                 float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
@@ -249,11 +253,13 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
+        // Set speed to desired speed
         moveSpeed = desiredMoveSpeed;
     }
 
     private void MovePlayer()
     {
+        // Don't do normal movement when swinging
         if (isSwinging) return;
         
         // Calculate players move direction
@@ -314,6 +320,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool OnSlope()
     {
+        // Check below player if they are standing on a slope (that is within the max slope angle)
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f) && isGrounded)
         {
 
@@ -331,6 +338,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void ResetCamera()
     {
+        // Set camera back to defaults
         cam.DoFov(defaultFov);
         cam.DoTilt(defaultTilt);
     }

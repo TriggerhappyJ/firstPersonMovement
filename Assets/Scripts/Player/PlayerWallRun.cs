@@ -66,12 +66,14 @@ public class PlayerWallRun : MonoBehaviour
 
     private void CheckWall()
     {
+        // Check to the left and right of the player for walls
         wallRight = Physics.Raycast(transform.position, pMovement.orientation.right, out rightWallHit, wallDistanceCheck, wallMask);
         wallLeft = Physics.Raycast(transform.position, -pMovement.orientation.right, out leftWallHit, wallDistanceCheck, wallMask);
     }
 
     private bool AboveGround()
     {
+        // Checks if the player is close to the ground
         return !Physics.Raycast(transform.position, Vector3.down, minJumpHeight, pMovement.groundMask);
     }
 

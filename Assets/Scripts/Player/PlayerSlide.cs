@@ -31,6 +31,7 @@ public class PlayerSlide : MonoBehaviour
 
     private void Update()
     {
+        // Start slide if key is pressed and conditions are met
         if (Input.GetKey(pKeybinds.slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
         {
             canSlide = false;
@@ -38,6 +39,7 @@ public class PlayerSlide : MonoBehaviour
             Invoke(nameof(ResetSlide), slideCooldown);
         }
         
+        // Stop slide when key is released or player stops moving (hits wall)
         if ((Input.GetKeyUp(pKeybinds.slideKey) && pMovement.isSliding || pMovement.rBody.velocity.magnitude <= 0.1f) && pMovement.isSliding)
         {
             StopSlide();
@@ -56,6 +58,7 @@ public class PlayerSlide : MonoBehaviour
     {
         pMovement.isSliding = true;
         
+        // Set player height and move them down into slide
         transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
         pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         
@@ -76,6 +79,7 @@ public class PlayerSlide : MonoBehaviour
     
     private void SlidingMovement()
     {
+        // Get players input direction
         Vector3 inputDirection = pMovement.orientation.forward * pMovement.verticalInput + pMovement.orientation.right * pMovement.horizontalInput;
 
         // Sliding on flat surface
@@ -99,6 +103,7 @@ public class PlayerSlide : MonoBehaviour
 
     private void StopSlide()
     {
+        // Set sliding state to false and reset players height back to normal
         pMovement.isSliding = false;
 
         transform.localScale = new Vector3(transform.localScale.x, pMovement.startYScale, transform.localScale.z);

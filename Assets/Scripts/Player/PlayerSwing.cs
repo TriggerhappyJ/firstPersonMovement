@@ -53,9 +53,10 @@ public class PlayerSwing : MonoBehaviour
             EndSwing();
         }
 
+        // Do swinging movement when swing has started (joint exists)
         if (joint != null)
         {
-            SwingMovemet();
+            SwingMovement();
         }
     }
 
@@ -66,8 +67,10 @@ public class PlayerSwing : MonoBehaviour
 
     private void CheckForSwingPoints()
         {
+            // Don't check for point if already swinging
             if (joint != null) return;
     
+            // Check for point to swing to    
             RaycastHit sphereCastHit;
             Physics.SphereCast(cam.position, predictionRadius, cam.forward, out sphereCastHit, maxSwingDistance, swingMask);
             
@@ -111,11 +114,10 @@ public class PlayerSwing : MonoBehaviour
     {
         // Check if predictionHit is not null
         if (predictionHit.point == Vector3.zero) return;
-            
-        Debug.Log("Set prediction point " + predictionHit.point);
-            
+        
         pMovement.isSwinging = true;
 
+        // Set point to swing to and joint on player
         swingPoint = predictionHit.point;
         joint = player.gameObject.AddComponent<SpringJoint>();
         joint.autoConfigureConnectedAnchor = false;
@@ -123,7 +125,7 @@ public class PlayerSwing : MonoBehaviour
             
         float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
             
-        // The distance grapple will try to keep from grapple point
+        // Distance config for joint, pulls player into the min from max distance
         joint.maxDistance = Mathf.Lerp(distanceFromPoint * 0.75f, distanceFromPoint * 0.20f, 2f);
         joint.minDistance = distanceFromPoint * 0.20f;
             
@@ -131,14 +133,15 @@ public class PlayerSwing : MonoBehaviour
         joint.spring = swingSpring;
         joint.damper = swingDamper;
         joint.massScale = swingMass;
-            
+        
+        // Setup line renderer for rope
         lRenderer.positionCount = 2;
         currentSwingPosition = swingTip.position;
-        
     }
     
     private void EndSwing()
     {
+        // Stop Rendering rope, stop swinging state, destroy joint on player
         lRenderer.positionCount = 0;
         pMovement.isSwinging = false;
         Destroy(joint);
@@ -149,13 +152,15 @@ public class PlayerSwing : MonoBehaviour
         // Don't draw rope if not swinging
         if (!joint) return;
         
+        // Animate rope from player to point
         currentSwingPosition = Vector3.Lerp(currentSwingPosition, swingPoint, Time.deltaTime * 16f);
         
+        // Set the two points of rope
         lRenderer.SetPosition(0, swingTip.position);
         lRenderer.SetPosition(1, currentSwingPosition);
     }
 
-    private void SwingMovemet()
+    private void SwingMovement()
     {
         // Right movement
         if (Input.GetKey(pKeybinds.rightKey))

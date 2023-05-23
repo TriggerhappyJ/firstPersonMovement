@@ -66,7 +66,8 @@ public class PlayerJump : MonoBehaviour
         pMovement.cam.DoTilt(jumpCamTilt);
     }
 
-    // Made to fix problem with downwards velocity (turns out the jump wasn't the issue :/)
+    // Made to fix a problem with downwards velocity (turned out to not be a jump issue)
+    // Not in use as simplier way also works but could be useful in the future
     /*private void DoubleJump()
     {
         // If player is moving downwards, cancel out their downwards velocity and then jump

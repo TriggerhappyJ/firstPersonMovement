@@ -12,16 +12,15 @@ public class PlatformMove : MonoBehaviour
     [SerializeField] private float moveSpeed;
     public Vector3 finalPosition;
     private Vector3 startPosition;
-    
 
     private void Start()
     {
-        //platform = GetComponent<Transform>();
         startPosition = transform.position;
     }
     
     private void FixedUpdate()
     {
+        // Set platform position to move between start and end positions
         platform.position = Vector3.Lerp(startPosition, finalPosition, Mathf.PingPong(Time.time * moveSpeed, 1.0f));
     }
 
