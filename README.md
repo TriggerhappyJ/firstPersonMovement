@@ -6,3 +6,4 @@ This is a small research project focusing on the movement in first person games 
 - Double-jumping
 - Sliding
 - Wall-running
+- Grapple/Swing
