@@ -31,8 +31,10 @@ public class PlayerSlide : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log((pMovement.OnSlope()));
+    
         // Start slide if key is pressed and conditions are met
-        if (Input.GetKey(pKeybinds.slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 11 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
+        if (Input.GetKey(pKeybinds.slideKey) && pMovement.verticalInput >= 1 && (!pMovement.OnSlope() && pMovement.rBody.velocity.magnitude >= 12 || pMovement.OnSlope() && pMovement.rBody.velocity.y <= -0.2f) && canSlide && pMovement.isGrounded)
         {
             canSlide = false;
             StartSlide();
