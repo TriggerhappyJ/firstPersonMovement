@@ -21,6 +21,7 @@ public class PlayerSwing : MonoBehaviour
     [Header("Prediction Settings")] 
     [SerializeField] private float predictionRadius;
     [SerializeField] private Transform predictionPoint;
+    [SerializeField] private bool LOSRequired;
     public RaycastHit predictionHit;
     
     [Header("References")] 
@@ -192,8 +193,9 @@ public class PlayerSwing : MonoBehaviour
         Physics.Raycast(cam.position, predictionHit.point - cam.position, out hit, maxSwingDistance, swingMask);
         
         // Stop swing if player loses line of sight
-        if (hit.point != predictionHit.point)
+        if (hit.point != predictionHit.point && LOSRequired)
         {
+
             EndSwing();
         }
     }
