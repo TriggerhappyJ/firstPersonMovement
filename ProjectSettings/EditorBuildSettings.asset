@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/FreerunCourse.unity
+    guid: 90485ac5c8e5dc5418bf210b5c46f6fd
   m_configObjects: {}
