@@ -10,6 +10,7 @@ public class PlayerCrouch : MonoBehaviour
     
     private PlayerMovement pMovement;
     private PlayerKeybinds pKeybinds;
+    [HideInInspector] public bool underSurface;
 
     [Header("Slide Camera Effects")]
     [SerializeField] private float crouchCamFov;
@@ -24,32 +25,44 @@ public class PlayerCrouch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Start crouch when key is pressed
-        if (Input.GetKeyDown(pKeybinds.crouchKey))
-        {
-            // Set players height and move player down
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        underSurface = Physics.Raycast(transform.position, Vector3.up, 2f, LayerMask.GetMask("Ground"));
 
-            pMovement.isCrouching = true;
-            
-            // Set camera effects
-            if (crouchCamFov > 0)
-            {
-                pMovement.cam.DoFov(crouchCamFov);
-            }
-            pMovement.cam.DoTilt(crouchCamTilt);
+        // Start crouch when key is pressed
+        if (Input.GetKeyDown(pKeybinds.crouchKey) || pMovement.state == PlayerMovement.MovementState.Walking && underSurface)
+        {
+            StartCrouch();
         }
         // Stop crouch when key is released
         else if (Input.GetKeyUp(pKeybinds.crouchKey))
         {
-            // Reset player height
-            transform.localScale = new Vector3(transform.localScale.x, pMovement.startYScale, transform.localScale.z);
+            StopCrouch();
+        }
+    }
 
-            pMovement.isCrouching = false;
+    private void StartCrouch()
+    {
+        // Set players height and move player down
+        transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+        pMovement.rBody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+
+        pMovement.isCrouching = true;
+
+        // Set camera effects
+        if (crouchCamFov > 0)
+        {
+            pMovement.cam.DoFov(crouchCamFov);
+        }
+        pMovement.cam.DoTilt(crouchCamTilt);
+    }
+
+    private void StopCrouch()
+    {
+        // Reset player height
+        transform.localScale = new Vector3(transform.localScale.x, pMovement.startYScale, transform.localScale.z);
+
+        pMovement.isCrouching = false;
             
-            // Reset camera effects
-            pMovement.ResetCamera();
-        } 
+        // Reset camera effects
+        pMovement.ResetCamera();
     }
 }

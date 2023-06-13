@@ -17,6 +17,7 @@ public class PlayerJump : MonoBehaviour
     
     private PlayerMovement pMovement;
     private PlayerKeybinds pKeybinds;
+    private PlayerCrouch pCrouch;
 
     private Vector3 platformVelocity;
     
@@ -24,6 +25,7 @@ public class PlayerJump : MonoBehaviour
     {
         pMovement = GetComponent<PlayerMovement>();
         pKeybinds = GetComponent<PlayerKeybinds>();
+        pCrouch = GetComponent<PlayerCrouch>();
     }
 
     private void Update()
@@ -35,13 +37,13 @@ public class PlayerJump : MonoBehaviour
         }
         
         // Jump logic
-        if (Input.GetKey(pKeybinds.jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.Wallrunning)
+        if (Input.GetKey(pKeybinds.jumpKey) && canJump && pMovement.isGrounded && pMovement.state != PlayerMovement.MovementState.Wallrunning && !pCrouch.underSurface)
         {
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         } 
-        else if (Input.GetKeyDown(pKeybinds.jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.Crouching && pMovement.state != PlayerMovement.MovementState.Wallrunning)
+        else if (Input.GetKeyDown(pKeybinds.jumpKey) && !pMovement.isGrounded && canDoubleJump && pMovement.state != PlayerMovement.MovementState.Crouching && pMovement.state != PlayerMovement.MovementState.Wallrunning && !pCrouch.underSurface)
         {
             canDoubleJump = false;
             Jump();
