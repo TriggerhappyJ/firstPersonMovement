@@ -5,20 +5,12 @@ using UnityEngine;
 
 public class PlayerPositionReset : MonoBehaviour
 {
-    private Transform player;
     public Transform resetPosition;
-
-    private void Start()
+    
+    private void OnTriggerEnter(Collider other)
     {
-        player = GameObject.FindWithTag("Player").transform;
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.collider.CompareTag("Player"))
-        {
-            Debug.Log("Player entered!");
-            player.transform.position = resetPosition.transform.position;
-        }
+        if (!other.CompareTag("Player")) return;
+        
+        GameObject.Find("Player").transform.position = resetPosition.transform.position;
     }
 }

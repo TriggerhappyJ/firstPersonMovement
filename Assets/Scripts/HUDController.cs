@@ -29,4 +29,13 @@ public class HUDController : MonoBehaviour
 
         cooldownText.text = "";
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+            Debug.Log("Quit game");
+        }
+    }
 }

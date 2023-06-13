@@ -24,4 +24,6 @@ public class PlayerKeybinds : MonoBehaviour
     public KeyCode speedBoostKey = KeyCode.E;
     public KeyCode dashKey = KeyCode.Q;
     public KeyCode swingKey = KeyCode.Mouse0;
+
+    public KeyCode quitKey = KeyCode.Escape;
 }
